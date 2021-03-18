@@ -5,12 +5,14 @@ class Gallery extends StatefulWidget {
   final ValueChanged<List<AssetEntity>> imagesChoice;
   final SlidingUpPanelController panelController;
   final Widget child;
+  final bool isVideo;
   Gallery({
     @required this.child,
     Key key,
     this.groupName,
     @required this.imagesChoice,
-    @required this.panelController
+    @required this.panelController,
+    this.isVideo = false
   }) : super(key: key);
 
   @override
@@ -18,11 +20,12 @@ class Gallery extends StatefulWidget {
 }
 
 class _GalleryState extends State<Gallery> {
-  final GalleryController _galleryController = Get.put(GalleryController());
+  GalleryController _galleryController;
   ScrollController scrollController;
 
   @override
   void initState() {
+    _galleryController = Get.put(GalleryController(isVideo: widget.isVideo));
     widget.panelController.addListener(() {
       if (widget.panelController.status == SlidingUpPanelStatus.hidden)
         _galleryController.imageChoiceList.clear();

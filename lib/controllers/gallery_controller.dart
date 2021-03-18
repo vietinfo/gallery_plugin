@@ -3,6 +3,9 @@ part of flutter_plugin_gallery;
 class GalleryController extends GetxController {
   List<AssetPathEntity> listFolder = <AssetPathEntity>[];
 
+  final bool isVideo;
+  GalleryController({this.isVideo});
+
   var imageChoiceList = <AssetEntity>[].obs;
   var imageList = <ImageModel>[].obs;
   var isLoading = false.obs;
@@ -22,7 +25,7 @@ class GalleryController extends GetxController {
     var result = await PhotoManager.requestPermission();
     if (result)
       listFolder = await PhotoManager.getAssetPathList(
-        type: RequestType.common,
+        type:(isVideo)?RequestType.common:RequestType.image,
         hasAll: true,
         onlyAll: true,
       );
