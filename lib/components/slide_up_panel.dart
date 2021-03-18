@@ -37,9 +37,6 @@ class SlideUpPanelWidget extends StatefulWidget {
   final Widget body;
   final Widget header;
 
-  ///The height of the widget to drag
-  final double controlHeight;
-
   /// The animation that controls the bottom sheet's position.
   ///
   /// The BottomSheet widget will manipulate the position of this animation, it
@@ -75,7 +72,6 @@ class SlideUpPanelWidget extends StatefulWidget {
   SlideUpPanelWidget({
     @required this.body,
     @required this.header,
-    @required this.controlHeight,
     this.animationController,
     @required this.panelController,
     this.onStatusChanged,

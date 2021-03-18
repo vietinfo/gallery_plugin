@@ -4,12 +4,13 @@ class Gallery extends StatefulWidget {
   final String groupName;
   final ValueChanged<List<AssetEntity>> imagesChoice;
   final SlidingUpPanelController panelController;
-
+  final Widget child;
   Gallery({
+    @required this.child,
     Key key,
     this.groupName,
-    this.imagesChoice,
-    this.panelController
+    @required this.imagesChoice,
+    @required this.panelController
   }) : super(key: key);
 
   @override
@@ -44,90 +45,95 @@ class _GalleryState extends State<Gallery> {
 
   @override
   Widget build(BuildContext context) {
-    return SlideUpPanelWidget(
-      header: Container(
-        height: 50,
-        width: Get.width,
-        child: Row(
-          children: [
-            BackButton(
-              onPressed: () => widget.panelController.hide(),
-            ),
-            Text(
-              'Chọn ảnh, video',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            Spacer(),
-            Obx(() => (_galleryController.imageChoiceList.length > 0)
-                ? Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: Stack(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      widget.imagesChoice(
-                          _galleryController.imageChoiceList);
-                      widget.panelController.hide();
-                    },
-                    child: Container(
-                      height: 45,
-                      width: 45,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: Colors.blue),
-                      child: Center(
-                        child: Icon(
-                          Icons.send_outlined,
-                          size: 22,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Positioned(
-                      bottom: 0,
-                      right: 0,
-                      child: Container(
-                        height: 20,
-                        width: 20,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.blue,
-                            border: Border.all(
-                                color: Colors.white, width: 3)),
-                        child: Center(
-                          child: Text(
-                            '${_galleryController.imageChoiceList.length}',
-                            style: TextStyle(
-                                fontSize: 9,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold),
+    return Stack(
+      children: [
+        widget.child,
+        SlideUpPanelWidget(
+          header: Container(
+            height: 50,
+            width: Get.width,
+            child: Row(
+              children: [
+                BackButton(
+                  onPressed: () => widget.panelController.hide(),
+                ),
+                Text(
+                  'Chọn ảnh, video',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                Spacer(),
+                Obx(() => (_galleryController.imageChoiceList.length > 0)
+                    ? Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Stack(
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          widget.imagesChoice(
+                              _galleryController.imageChoiceList);
+                          widget.panelController.hide();
+                        },
+                        child: Container(
+                          height: 45,
+                          width: 45,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.blue),
+                          child: Center(
+                            child: Icon(
+                              Icons.send_outlined,
+                              size: 22,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                      ))
-                ],
-              ),
-            )
-                : SizedBox.shrink())
-          ],
-        ),
-      ),
-      body: Container(
-        child: Obx(() => (_galleryController.isLoading.value)
-            ? GridView.builder(
-            controller: scrollController,
-            itemCount: _galleryController.listFolder[0].assetCount,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              mainAxisSpacing: 5,
-              crossAxisSpacing: 5,
+                      ),
+                      Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            height: 20,
+                            width: 20,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.blue,
+                                border: Border.all(
+                                    color: Colors.white, width: 3)),
+                            child: Center(
+                              child: Text(
+                                '${_galleryController.imageChoiceList.length}',
+                                style: TextStyle(
+                                    fontSize: 9,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ))
+                    ],
+                  ),
+                )
+                    : SizedBox.shrink())
+              ],
             ),
-            itemBuilder: _buildImage)
-            : loadWidget(20)),
-        color: Colors.white,
-      ),
-      anchor: 0.4,
-      panelController: widget.panelController,
-      enableOnTap: true, //Enable the onTap callback for control bar.
+          ),
+          body: Container(
+            child: Obx(() => (_galleryController.isLoading.value)
+                ? GridView.builder(
+                controller: scrollController,
+                itemCount: _galleryController.listFolder[0].assetCount,
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 3,
+                  mainAxisSpacing: 5,
+                  crossAxisSpacing: 5,
+                ),
+                itemBuilder: _buildImage)
+                : loadWidget(20)),
+            color: Colors.white,
+          ),
+          anchor: 0.4,
+          panelController: widget.panelController,
+          enableOnTap: true, //Enable the onTap callback for control bar.
+        ),
+      ],
     );
   }
 
