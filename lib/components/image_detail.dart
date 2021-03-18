@@ -5,11 +5,13 @@ class ImageDetail extends StatelessWidget {
   final List<ImageModel> imageList;
   final int initIndex;
   final ValueChanged<List<AssetEntity>> imagesChoice;
+  final bool isSelectMulti;
   ImageDetail(
       {this.imageList,
       this.initIndex,
       this.groupName,
-      this.imagesChoice});
+      this.imagesChoice,
+      this.isSelectMulti});
 
   @override
   Widget build(BuildContext context) {
@@ -20,59 +22,67 @@ class ImageDetail extends StatelessWidget {
         backgroundColor: Colors.transparent,
         title: Text(groupName ?? ' '),
         actions: [
-          Obx(() {
-            if (_galleryController.imageChoiceList.length > 0)
-              return Container(
-                height: 25,
-                width: 25,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(color: Colors.white, width: 2),
-                    color: Colors.transparent),
-                child: Center(
-                  child: Text(
-                    '${_galleryController.imageChoiceList.length}',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              );
-            else
-              return SizedBox.shrink();
-          }),
-          Obx(() {
-            return GestureDetector(
-              onTap: () => _galleryController.actionImageChoiceList(
-                  imageList[_galleryController.currentIndex.value].assetEntity),
-              child: Padding(
-                padding: const EdgeInsets.only(right: 8, left: 8),
-                child: (_galleryController.checkImageChoice(
-                    imageList[_galleryController.currentIndex.value].assetEntity))
-                    ? Container(
-                        height: 25,
-                        width: 25,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2),
-                            color: Colors.blue),
-                        child: Center(
-                          child: Icon(
-                            Icons.check,
-                            color: Colors.white,
-                          ),
+          (isSelectMulti)
+              ? Obx(() {
+                  if (_galleryController.imageChoiceList.length > 0)
+                    return Container(
+                      height: 25,
+                      width: 25,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 2),
+                          color: Colors.transparent),
+                      child: Center(
+                        child: Text(
+                          '${_galleryController.imageChoiceList.length}',
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
                         ),
-                      )
-                    : Container(
-                        height: 25,
-                        width: 25,
-                        decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.white, width: 2),
-                            color: Colors.transparent),
                       ),
-              ),
-            );
-          })
+                    );
+                  else
+                    return SizedBox.shrink();
+                })
+              : SizedBox.shrink(),
+          (isSelectMulti)
+              ? Obx(() {
+                  return GestureDetector(
+                    onTap: () => _galleryController.actionImageChoiceList(
+                        imageList[_galleryController.currentIndex.value]
+                            .assetEntity),
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8, left: 8),
+                      child: (_galleryController.checkImageChoice(
+                              imageList[_galleryController.currentIndex.value]
+                                  .assetEntity))
+                          ? Container(
+                              height: 25,
+                              width: 25,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border:
+                                      Border.all(color: Colors.white, width: 2),
+                                  color: Colors.blue),
+                              child: Center(
+                                child: Icon(
+                                  Icons.check,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            )
+                          : Container(
+                              height: 25,
+                              width: 25,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border:
+                                      Border.all(color: Colors.white, width: 2),
+                                  color: Colors.transparent),
+                            ),
+                    ),
+                  );
+                })
+              : SizedBox.shrink()
         ],
       ),
       body: Stack(
@@ -88,28 +98,54 @@ class ImageDetail extends StatelessWidget {
           Positioned(
             bottom: 20,
             right: 10,
-            child: GestureDetector(
-              onTap: () {
-                if(_galleryController.imageChoiceList.length > 0) {
-                  imagesChoice(_galleryController.imageChoiceList);
-                  _galleryController.imageChoiceList.clear();
-                  Get.back(result: true);
-                }
-              },
-              child: Container(
-                height: 60,
-                width: 60,
-                decoration:
-                    BoxDecoration(shape: BoxShape.circle, color: Colors.blue),
-                child: Center(
-                  child: Icon(
-                    Icons.send_outlined,
-                    size: 28,
-                    color: Colors.white,
+            child: (isSelectMulti)
+                ? Obx(() {
+                    if (_galleryController.imageChoiceList.length > 0)
+                      return GestureDetector(
+                        onTap: () {
+                          imagesChoice(_galleryController.imageChoiceList);
+                          _galleryController.imageChoiceList.clear();
+                          Get.back(result: true);
+                        },
+                        child: Container(
+                          height: 60,
+                          width: 60,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.blue),
+                          child: Center(
+                            child: Icon(
+                              Icons.send_outlined,
+                              size: 28,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      );
+                    else
+                      return SizedBox.shrink();
+                  })
+                : GestureDetector(
+                    onTap: () {
+                      AssetEntity imageSelect = _galleryController
+                          .imageList[_galleryController.currentIndex.value]
+                          .assetEntity;
+                      imagesChoice([imageSelect]);
+                      Get.back(result: true);
+                    },
+                    child: Container(
+                      height: 60,
+                      width: 60,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.blue),
+                      child: Center(
+                        child: Icon(
+                          Icons.check,
+                          size: 28,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            ),
           )
         ],
       ),

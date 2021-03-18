@@ -2,6 +2,11 @@ part of flutter_plugin_gallery;
 
 class Gallery extends StatefulWidget {
   final String groupName;
+  final Color iconColor;
+  final Color titleColor;
+  final String title;
+  final Color headerColor;
+  final isSelectMulti;
   final ValueChanged<List<AssetEntity>> imagesChoice;
   final SlidingUpPanelController panelController;
   final Widget child;
@@ -10,6 +15,11 @@ class Gallery extends StatefulWidget {
     @required this.child,
     Key key,
     this.groupName,
+    this.title,
+    this.iconColor,
+    this.titleColor,
+    this.headerColor,
+    this.isSelectMulti = true,
     @required this.imagesChoice,
     @required this.panelController,
     this.isVideo = false
@@ -53,19 +63,32 @@ class _GalleryState extends State<Gallery> {
         widget.child,
         SlideUpPanelWidget(
           header: Container(
+            decoration: BoxDecoration(
+              color: widget.headerColor ?? Colors.white,
+                borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10.0),
+            topRight: Radius.circular(10.0),
+          ),
+            ),
             height: 50,
             width: Get.width,
             child: Row(
               children: [
-                BackButton(
-                  onPressed: () => widget.panelController.hide(),
+                GestureDetector(
+                  onTap: () => widget.panelController.hide(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left:8.0 , right: 16),
+                    child: Icon(
+                      Icons.clear, color: widget.iconColor ?? Colors.black,
+                    ),
+                  ),
                 ),
                 Text(
-                  'Chọn ảnh, video',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  widget.title ?? 'Thư viện',
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: widget.titleColor ?? Colors.black),
                 ),
                 Spacer(),
-                Obx(() => (_galleryController.imageChoiceList.length > 0)
+                (widget.isSelectMulti)?Obx(() => (_galleryController.imageChoiceList.length > 0)
                     ? Padding(
                   padding: const EdgeInsets.only(right: 8.0),
                   child: Stack(
@@ -114,7 +137,7 @@ class _GalleryState extends State<Gallery> {
                     ],
                   ),
                 )
-                    : SizedBox.shrink())
+                    : SizedBox.shrink()):SizedBox.shrink()
               ],
             ),
           ),
@@ -156,6 +179,7 @@ class _GalleryState extends State<Gallery> {
           onTap: () async{
             _galleryController.currentIndex.value = index;
             var result =  await Get.to(() => ImageDetail(
+              isSelectMulti: widget.isSelectMulti,
                   imageList: _galleryController.imageList,
                   initIndex: index,
                   groupName: widget.groupName,
@@ -168,7 +192,7 @@ class _GalleryState extends State<Gallery> {
             imageModel: imageModel,
           ),
         ),
-        Positioned(
+        (widget.isSelectMulti)?Positioned(
             top: 5,
             right: 5,
             child: Obx(() => GestureDetector(
@@ -200,7 +224,7 @@ class _GalleryState extends State<Gallery> {
                               border: Border.all(color: Colors.white, width: 2),
                               color: Colors.transparent),
                         ),
-                )))
+                ))):SizedBox.shrink()
       ],
     );
   }
