@@ -28,19 +28,9 @@ class _GalleryState extends State<Gallery> {
     });
     scrollController = ScrollController();
     scrollController.addListener(() {
-      if (scrollController.offset >=
-              scrollController.position.maxScrollExtent &&
-          !scrollController.position.outOfRange) {
+      if (scrollController.offset >= Get.width/3*5) {
         widget.panelController.expand();
-      } else if (scrollController.offset <=
-              scrollController.position.minScrollExtent &&
-          !scrollController.position.outOfRange) {
-        widget.panelController.anchor();
       }
-      if (SlidingUpPanelStatus.anchored == widget.panelController.status &&
-          scrollController.offset <=
-              scrollController.position.minScrollExtent &&
-          !scrollController.position.outOfRange) widget.panelController.hide();
     });
     super.initState();
   }
