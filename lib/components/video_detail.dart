@@ -28,7 +28,7 @@ class _VideoDetailState extends State<VideoDetail> {
     videoPlayerController = VideoPlayerController.file(widget.file);
     _chewieController = ChewieController(
       videoPlayerController: videoPlayerController,
-      aspectRatio: 1.0,
+      aspectRatio: 9/16,
       autoInitialize: true,
       autoPlay: widget.autoPlay,
       looping: widget.looping,

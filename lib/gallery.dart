@@ -6,14 +6,16 @@ class Gallery extends StatefulWidget {
   final Color titleColor;
   final String title;
   final Color headerColor;
-  final isSelectMulti;
+  final bool isSelectMulti;
   final ValueChanged<List<AssetEntity>> imagesChoice;
   final SlidingUpPanelController panelController;
   final Widget child;
   final bool isVideo;
+  final int qualityImage;
   Gallery({
     @required this.child,
     Key key,
+    this.qualityImage,
     this.groupName,
     this.title,
     this.iconColor,
@@ -35,7 +37,7 @@ class _GalleryState extends State<Gallery> {
 
   @override
   void initState() {
-    _galleryController = Get.put(GalleryController(isVideo: widget.isVideo));
+    _galleryController = Get.put(GalleryController(isVideo: widget.isVideo, quality: widget.qualityImage));
     widget.panelController.addListener(() {
       if (widget.panelController.status == SlidingUpPanelStatus.hidden)
         _galleryController.imageChoiceList.clear();

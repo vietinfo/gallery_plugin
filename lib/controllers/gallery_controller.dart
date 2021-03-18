@@ -4,7 +4,8 @@ class GalleryController extends GetxController {
   List<AssetPathEntity> listFolder = <AssetPathEntity>[];
 
   final bool isVideo;
-  GalleryController({this.isVideo});
+  final int quality;
+  GalleryController({this.isVideo, this.quality});
 
   var imageChoiceList = <AssetEntity>[].obs;
   var imageList = <ImageModel>[].obs;
@@ -15,7 +16,6 @@ class GalleryController extends GetxController {
   ScrollController scrollController = ScrollController();
   var page = 0;
   int itemInOnePage = 21;
-  int quality = 20;
 
   Future<void> refreshGalleryList() async {
     isLoading(false);
@@ -41,7 +41,7 @@ class GalleryController extends GetxController {
               width: 200,
               height: 200,
               format: ThumbFormat.jpeg,
-              quality: quality))));
+              quality: quality ?? 30))));
       if (images.length == imageList.length) {
         imageList.sort((s1, s2) =>
             s2.assetEntity.createDtSecond.compareTo(
@@ -77,7 +77,7 @@ class GalleryController extends GetxController {
               width: 200,
               height: 200,
               format: ThumbFormat.jpeg,
-              quality: quality))));
+              quality: quality ?? 30))));
     });
     imageList.sort((s1, s2) =>
         s2.assetEntity.createDtSecond.compareTo(
