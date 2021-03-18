@@ -90,7 +90,11 @@ class ImageDetail extends StatelessWidget {
             right: 10,
             child: GestureDetector(
               onTap: () {
-                imagesChoice(_galleryController.imageChoiceList);
+                if(_galleryController.imageChoiceList.length > 0) {
+                  imagesChoice(_galleryController.imageChoiceList);
+                  _galleryController.imageChoiceList.clear();
+                  Get.back(result: true);
+                }
               },
               child: Container(
                 height: 60,

@@ -67,6 +67,7 @@ class _GalleryState extends State<Gallery> {
                     onTap: () {
                       widget.imagesChoice(
                           _galleryController.imageChoiceList);
+                      widget.panelController.hide();
                     },
                     child: Container(
                       height: 45,
@@ -143,14 +144,16 @@ class _GalleryState extends State<Gallery> {
     return Stack(
       children: [
         GestureDetector(
-          onTap: () {
+          onTap: () async{
             _galleryController.currentIndex.value = index;
-            Get.to(() => ImageDetail(
+            var result =  await Get.to(() => ImageDetail(
                   imageList: _galleryController.imageList,
                   initIndex: index,
                   groupName: widget.groupName,
                   imagesChoice: widget.imagesChoice,
                 ));
+            if(result != null)
+              widget.panelController.hide();
           },
           child: ImageItem(
             imageModel: imageModel,
