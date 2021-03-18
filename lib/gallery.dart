@@ -1,0 +1,205 @@
+part of flutter_plugin_gallery;
+
+class Gallery extends StatefulWidget {
+  final String groupName;
+  final ValueChanged<List<AssetEntity>> imagesChoice;
+  final SlidingUpPanelController panelController;
+
+  Gallery({
+    Key key,
+    this.groupName,
+    this.imagesChoice,
+    this.panelController
+  }) : super(key: key);
+
+  @override
+  _GalleryState createState() => _GalleryState();
+}
+
+class _GalleryState extends State<Gallery> {
+  final GalleryController _galleryController = Get.put(GalleryController());
+  ScrollController scrollController;
+
+  @override
+  void initState() {
+    widget.panelController.addListener(() {
+      if (widget.panelController.status == SlidingUpPanelStatus.hidden)
+        _galleryController.imageChoiceList.clear();
+    });
+    scrollController = ScrollController();
+    scrollController.addListener(() {
+      if (scrollController.offset >=
+              scrollController.position.maxScrollExtent &&
+          !scrollController.position.outOfRange) {
+        widget.panelController.expand();
+      } else if (scrollController.offset <=
+              scrollController.position.minScrollExtent &&
+          !scrollController.position.outOfRange) {
+        widget.panelController.anchor();
+      }
+      if (SlidingUpPanelStatus.anchored == widget.panelController.status &&
+          scrollController.offset <=
+              scrollController.position.minScrollExtent &&
+          !scrollController.position.outOfRange) widget.panelController.hide();
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    widget.panelController.dispose();
+    scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideUpPanelWidget(
+      header: Container(
+        height: 50,
+        width: Get.width,
+        child: Row(
+          children: [
+            BackButton(
+              onPressed: () => widget.panelController.hide(),
+            ),
+            Text(
+              'Chọn ảnh, video',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            Spacer(),
+            Obx(() => (_galleryController.imageChoiceList.length > 0)
+                ? Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Stack(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      widget.imagesChoice(
+                          _galleryController.imageChoiceList);
+                    },
+                    child: Container(
+                      height: 45,
+                      width: 45,
+                      decoration: BoxDecoration(
+                          shape: BoxShape.circle, color: Colors.blue),
+                      child: Center(
+                        child: Icon(
+                          Icons.send_outlined,
+                          size: 22,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        height: 20,
+                        width: 20,
+                        decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.blue,
+                            border: Border.all(
+                                color: Colors.white, width: 3)),
+                        child: Center(
+                          child: Text(
+                            '${_galleryController.imageChoiceList.length}',
+                            style: TextStyle(
+                                fontSize: 9,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ))
+                ],
+              ),
+            )
+                : SizedBox.shrink())
+          ],
+        ),
+      ),
+      body: Container(
+        child: Obx(() => (_galleryController.isLoading.value)
+            ? GridView.builder(
+            controller: scrollController,
+            itemCount: _galleryController.listFolder[0].assetCount,
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisSpacing: 5,
+              crossAxisSpacing: 5,
+            ),
+            itemBuilder: _buildImage)
+            : loadWidget(20)),
+        color: Colors.white,
+      ),
+      anchor: 0.4,
+      panelController: widget.panelController,
+      enableOnTap: true, //Enable the onTap callback for control bar.
+    );
+  }
+
+  Widget _buildImage(BuildContext context, int index) {
+    if (_galleryController.imageList.length - 6 == index)
+      _galleryController.loadMoreItem();
+
+    if (index > _galleryController.imageList.length - 1) {
+      return loadWidget(10);
+    }
+
+    final ImageModel imageModel = _galleryController.imageList[index];
+
+    return Stack(
+      children: [
+        GestureDetector(
+          onTap: () {
+            _galleryController.currentIndex.value = index;
+            Get.to(() => ImageDetail(
+                  imageList: _galleryController.imageList,
+                  initIndex: index,
+                  groupName: widget.groupName,
+                  imagesChoice: widget.imagesChoice,
+                ));
+          },
+          child: ImageItem(
+            imageModel: imageModel,
+          ),
+        ),
+        Positioned(
+            top: 5,
+            right: 5,
+            child: Obx(() => GestureDetector(
+                  onTap: () {
+                    _galleryController
+                        .actionImageChoiceList(imageModel.assetEntity);
+                  },
+                  child: (_galleryController
+                          .checkImageChoice(imageModel.assetEntity))
+                      ? Container(
+                          height: 25,
+                          width: 25,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle, color: Colors.blue),
+                          child: Center(
+                            child: Text(
+                              '${_galleryController.getIndexImageChoice(imageModel.assetEntity)}',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        )
+                      : Container(
+                          height: 25,
+                          width: 25,
+                          decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(color: Colors.white, width: 2),
+                              color: Colors.transparent),
+                        ),
+                )))
+      ],
+    );
+  }
+}
