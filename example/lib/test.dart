@@ -23,6 +23,7 @@ class _TestState extends State<Test> {
             ),
           ),
           isSelectMulti: true,
+          isVideo: true,
           panelController: panelController,
           imagesChoice: (images) {
             print(images.length);

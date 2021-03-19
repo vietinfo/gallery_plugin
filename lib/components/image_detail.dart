@@ -87,14 +87,7 @@ class ImageDetail extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          PageView(
-            controller: PageController(initialPage: initIndex),
-            scrollDirection: Axis.horizontal,
-            onPageChanged: (index) {
-              _galleryController.currentIndex.value = index;
-            },
-            children: buildImage(),
-          ),
+          buildImage(_galleryController),
           Positioned(
             bottom: 20,
             right: 10,
@@ -151,41 +144,98 @@ class ImageDetail extends StatelessWidget {
       ),
     );
   }
-
   // PhotoViewGallery
 
-  List<Widget> buildImage() {
-    List<Widget> widgets = <Widget>[];
-    imageList.forEach((element) {
-      widgets.add(FutureBuilder<File>(
-        future: element.assetEntity.file,
-        builder: (_, snapshot) {
-          if (snapshot.data == null) {
-            return Container(
-                height: Get.height, width: Get.width, child: loadWidget(30));
-          } else if (element.assetEntity.type == AssetType.image)
-            return Container(
-              height: Get.height,
-              width: Get.width,
-              child: PhotoView(
-                  loadingBuilder: (context, event) => loadWidget(30),
-                  imageProvider: FileImage(
-                    snapshot.data,
-                  )),
-            );
-          else {
-            return Container(
+  Widget buildImage(GalleryController _galleryController) {
+    return ExtendedImageGesturePageView.builder(
+      itemBuilder: (BuildContext context, int index) {
+        return FutureBuilder(
+          future: imageList[index].assetEntity.file,
+          builder: (context, snapshot) {
+            if (snapshot.data == null) {
+              return Container(
+                  height: Get.height, width: Get.width, child: loadWidget(30));
+            } else if (imageList[index].assetEntity.type == AssetType.image)
+              return Container(
                 height: Get.height,
                 width: Get.width,
-                child: VideoDetail(
-                  looping: false,
-                  autoPlay: true,
-                  file: snapshot.data,
-                ));
-          }
-        },
-      ));
-    });
-    return widgets;
+                child: _image(snapshot.data),
+              );
+            else {
+              return Container(
+                  height: Get.height,
+                  width: Get.width,
+                  child: VideoDetail(
+                    looping: false,
+                    autoPlay: true,
+                    file: snapshot.data,
+                  ));
+            }
+          },
+        );
+      },
+      itemCount: imageList.length,
+      onPageChanged: (int index) {
+        _galleryController.currentIndex.value = index;
+      },
+      controller: PageController(
+        initialPage: initIndex,
+      ),
+      scrollDirection: Axis.horizontal,
+    );
+  }
+
+  Widget _image(File file){
+    return ExtendedImage.file(
+      file,
+      fit: BoxFit.contain,
+      enableMemoryCache: true,
+      mode: ExtendedImageMode.gesture,
+      loadStateChanged: (ExtendedImageState state) {
+        switch (state.extendedImageLoadState) {
+          case LoadState.loading:
+            return loadWidget(30);
+            break;
+          case LoadState.completed:
+            return ExtendedImage.file(
+              file,
+              fit: BoxFit.contain,
+              enableMemoryCache: true,
+              mode: ExtendedImageMode.gesture,
+              initGestureConfigHandler: (state) {
+                return GestureConfig(
+                  minScale: 0.9,
+                  animationMinScale: 0.7,
+                  maxScale: 3.0,
+                  animationMaxScale: 3.5,
+                  speed: 1.0,
+                  inertialSpeed: 100.0,
+                  initialScale: 1.0,
+                  inPageView: true,
+                  cacheGesture: false,
+                  initialAlignment: InitialAlignment.center,
+                );
+              },
+            );
+            break;
+          default:
+            return loadWidget(30);
+        }
+      },
+      initGestureConfigHandler: (state) {
+        return GestureConfig(
+          minScale: 0.9,
+          animationMinScale: 0.7,
+          maxScale: 3.0,
+          animationMaxScale: 3.5,
+          speed: 1.0,
+          inertialSpeed: 100.0,
+          initialScale: 1.0,
+          inPageView: true,
+          cacheGesture: false,
+          initialAlignment: InitialAlignment.center,
+        );
+      },
+    );
   }
 }
