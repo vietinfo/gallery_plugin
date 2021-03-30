@@ -11,10 +11,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get: ^3.26.0
-  photo_manager: ^0.6.0
-  extended_image: ^3.0.0
-  video_player: ^2.0.2
+  get: ^4.1.1
+  photo_manager: ^1.0.6
+  extended_image: ^4.0.0
+  video_player: ^2.1.0
   chewie: ^1.0.0
 
 dev_dependencies:
