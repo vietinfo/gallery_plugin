@@ -147,7 +147,7 @@ class _GalleryState extends State<Gallery> {
             child: Obx(() => (_galleryController.isLoading.value)
                 ? GridView.builder(
                 controller: scrollController,
-                itemCount: _galleryController.listFolder[0].assetCount,
+                itemCount: _galleryController.imageList.length,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
                   mainAxisSpacing: 5,
@@ -166,12 +166,8 @@ class _GalleryState extends State<Gallery> {
   }
 
   Widget _buildImage(BuildContext context, int index) {
-    if (_galleryController.imageList.length - 6 == index)
+    if (_galleryController.imageList.length - 9 == index)
       _galleryController.loadMoreItem();
-
-    if (index > _galleryController.imageList.length - 1) {
-      return loadWidget(10);
-    }
 
     final ImageModel imageModel = _galleryController.imageList[index];
 

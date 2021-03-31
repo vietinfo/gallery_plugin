@@ -16,6 +16,7 @@ class ImageItem extends StatelessWidget {
         width: 200,
         height: 200,
         fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) => noImage(),
       );
     else
       return Stack(
@@ -25,6 +26,7 @@ class ImageItem extends StatelessWidget {
             width: 200,
             height: 200,
             fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) => noImage(),
           ),
           Positioned(
               top: 0,

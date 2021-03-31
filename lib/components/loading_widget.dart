@@ -10,3 +10,7 @@ Widget loadWidget(double size){
     ),
   );
 }
+
+Widget noImage(){
+  return Image.asset('assets/noimg.png', fit: BoxFit.cover,);
+}
