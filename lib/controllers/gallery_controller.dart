@@ -13,6 +13,8 @@ class GalleryController extends GetxController {
   var isShowGallery = true.obs;
   var currentIndex = 0.obs;
 
+  var isRoll = false.obs;
+
 
   ScrollController scrollController = ScrollController();
   var page = 0;

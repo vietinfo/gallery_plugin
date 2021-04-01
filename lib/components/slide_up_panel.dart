@@ -23,15 +23,6 @@ enum SlidingUpPanelStatus {
   ///todo
   dragging,
 }
-
-///
-///created time: 2019-09-18 15:11
-///author linzhiliang
-///version 1.0
-///since
-///file name: sliding_up_panel_widget.dart
-///description:
-///
 class SlideUpPanelWidget extends StatefulWidget {
   ///Child widget
   final Widget body;
@@ -84,7 +75,6 @@ class SlideUpPanelWidget extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _SlideUpPanelWidgetState();
   }
 
