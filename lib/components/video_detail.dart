@@ -1,17 +1,15 @@
 part of flutter_plugin_gallery;
 
 class VideoDetail extends StatefulWidget {
-  final VideoPlayerController videoPlayerController;
-  final bool looping;
-  final bool autoPlay;
+  late final bool looping;
+  late final bool autoPlay;
   final File file;
 
   VideoDetail({
-    this.file,
-    this.looping,
-    this.autoPlay,
-    Key key, this.videoPlayerController,
-  }) : super(key: key);
+    required this.file,
+    this.looping = false,
+    this.autoPlay = true,
+  });
 
   @override
   _VideoDetailState createState() => _VideoDetailState();
@@ -19,8 +17,8 @@ class VideoDetail extends StatefulWidget {
 
 class _VideoDetailState extends State<VideoDetail> {
 
-  ChewieController _chewieController;
-  VideoPlayerController videoPlayerController;
+  late ChewieController _chewieController;
+  late VideoPlayerController videoPlayerController;
 
   @override
   void initState() {

@@ -32,7 +32,6 @@ class SlideUpPanelWidget extends StatefulWidget {
   ///
   /// The BottomSheet widget will manipulate the position of this animation, it
   /// is not just a passive observer.
-  final AnimationController animationController;
 
   ///The controller of the panel
   final SlidingUpPanelController panelController;
@@ -42,10 +41,10 @@ class SlideUpPanelWidget extends StatefulWidget {
   /// The panel might be prevented from closing (e.g., by user
   /// interaction) even after this callback is called. For this reason, this
   /// callback might be call multiple times for a given bottom sheet.
-  final OnSlidingUpPanelStatusChanged onStatusChanged;
+  final OnSlidingUpPanelStatusChanged? onStatusChanged;
 
   ///Void callback when click control bar
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
 
 
   ///Enable the tap callback for control bar
@@ -61,10 +60,9 @@ class SlideUpPanelWidget extends StatefulWidget {
   final double anchor;
 
   SlideUpPanelWidget({
-    @required this.body,
-    @required this.header,
-    this.animationController,
-    @required this.panelController,
+    required this.body,
+    required this.header,
+    required this.panelController,
     this.onStatusChanged,
     this.onTap,
     this.enableOnTap = true,
@@ -78,7 +76,7 @@ class SlideUpPanelWidget extends StatefulWidget {
     return _SlideUpPanelWidgetState();
   }
 
-  static SlideUpPanelWidget of(BuildContext context) {
+  static SlideUpPanelWidget? of(BuildContext context) {
     return context.findAncestorWidgetOfExactType<SlideUpPanelWidget>();
   }
 
@@ -94,17 +92,19 @@ class SlideUpPanelWidget extends StatefulWidget {
 
 class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
     with SingleTickerProviderStateMixin<SlideUpPanelWidget> {
-  Animation<Offset> animation;
+  late Animation<Offset> animation;
 
   final GlobalKey _childKey =
   GlobalKey(debugLabel: 'SlidingUpPanelWidget child');
 
-  double get _childHeight {
-    final RenderBox renderBox = _childKey.currentContext.findRenderObject();
-    return renderBox.size.height;
+  double? get _childHeight {
+    final RenderBox? renderBox = _childKey.currentContext?.findAncestorRenderObjectOfType<RenderBox>();
+    if(renderBox != null)
+      return renderBox.size.height;
+    return null;
   }
 
-  AnimationController _animationController;
+  late AnimationController _animationController;
 
   double upperBound = 1.0;
 
@@ -115,13 +115,9 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
   @override
   void initState() {
     upperBound = 1.0;
-    widget.panelController?.addListener(handlePanelStatusChanged);
-    if (widget.animationController == null) {
+    widget.panelController.addListener(handlePanelStatusChanged);
       _animationController =
           SlideUpPanelWidget.createAnimationController(this);
-    } else {
-      _animationController = widget.animationController;
-    }
     animation = _animationController.drive(
       Tween(begin: Offset(0.0, upperBound), end: Offset.zero).chain(
         CurveTween(
@@ -130,12 +126,12 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
       ),
     );
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initData(context));
+    WidgetsBinding.instance?.addPostFrameCallback((_) => _initData(context));
   }
 
   void _initData(BuildContext context) {
-    widget.panelController?.value = widget.panelStatus;
-    switch (widget.panelController?.status) {
+    widget.panelController.value = widget.panelStatus;
+    switch (widget.panelController.status) {
       case SlidingUpPanelStatus.anchored:
         _animationController.value = anchorFraction;
         break;
@@ -153,7 +149,7 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
 
   @override
   void dispose() {
-    _animationController?.dispose();
+    _animationController.dispose();
     super.dispose();
   }
 
@@ -166,7 +162,7 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
       child: SafeArea(
         child: AnimatedBuilder(
           animation: _animationController,
-          builder: (BuildContext context, Widget child) {
+          builder: (BuildContext context, Widget? child) {
             return SlideTransition(
               child: child,
               position: animation,
@@ -239,7 +235,7 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
   ///Handle method when user drag the panel
   void _handleDragUpdate(DragUpdateDetails details) {
     _animationController.value -=
-        details.primaryDelta / (_childHeight ?? details.primaryDelta);
+        details.primaryDelta! / (_childHeight ?? details.primaryDelta!);
   }
 
   ///Handle method when user release drag.
@@ -275,7 +271,7 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
 
   ///Expand the panel
   void expand() {
-    _animationController?.animateTo(1.0,
+    _animationController.animateTo(1.0,
         curve: Curves.linearToEaseOut, duration: _kSlidingUpPanelDuration);
     widget.panelController.value = SlidingUpPanelStatus.expanded;
     widget.onStatusChanged?.call(widget.panelController.status);
@@ -283,7 +279,7 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
 
   ///Anchor the panel
   void anchor() {
-    _animationController?.animateTo(anchorFraction,
+    _animationController.animateTo(anchorFraction,
         curve: Curves.linearToEaseOut, duration: _kSlidingUpPanelDuration);
     widget.panelController.value = SlidingUpPanelStatus.anchored;
     widget.onStatusChanged?.call(widget.panelController.status);
@@ -291,7 +287,7 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
 
   ///Hide the panel
   void hide() {
-    _animationController?.animateTo(0.0,
+    _animationController.animateTo(0.0,
         curve: Curves.linearToEaseOut, duration: _kSlidingUpPanelDuration);
     widget.panelController.value = SlidingUpPanelStatus.hidden;
     widget.onStatusChanged?.call(widget.panelController.status);
@@ -299,9 +295,6 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
 
   ///Handle the status changed of panel
   void handlePanelStatusChanged() {
-    if (widget.panelController == null) {
-      return;
-    }
     widget.onStatusChanged?.call(widget.panelController.value);
     switch (widget.panelController.value) {
       case SlidingUpPanelStatus.anchored:
@@ -328,7 +321,7 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
 
 ///The controller of SlidingUpPanelWidget
 class SlidingUpPanelController extends ValueNotifier<SlidingUpPanelStatus> {
-  SlidingUpPanelController({SlidingUpPanelStatus value})
+  SlidingUpPanelController({SlidingUpPanelStatus? value})
       : super(value != null ? value : SlidingUpPanelStatus.hidden);
 
   SlidingUpPanelStatus get status => value;

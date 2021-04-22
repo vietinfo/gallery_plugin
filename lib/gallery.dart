@@ -1,20 +1,19 @@
 part of flutter_plugin_gallery;
 
 class Gallery extends StatefulWidget {
-  final String groupName;
-  final Color iconColor;
-  final Color titleColor;
-  final String title;
-  final Color headerColor;
+  final String? groupName;
+  final Color? iconColor;
+  final Color? titleColor;
+  final String? title;
+  final Color? headerColor;
   final bool isSelectMulti;
   final ValueChanged<List<AssetEntity>> imagesChoice;
   final SlidingUpPanelController panelController;
   final Widget child;
-  final bool isVideo;
-  final int qualityImage;
+  final bool? isVideo;
+  final int? qualityImage;
   Gallery(
-      {@required this.child,
-      Key key,
+      {required this.child,
       this.qualityImage,
       this.groupName,
       this.title,
@@ -22,17 +21,16 @@ class Gallery extends StatefulWidget {
       this.titleColor,
       this.headerColor,
       this.isSelectMulti = true,
-      @required this.imagesChoice,
-      @required this.panelController,
-      this.isVideo = false})
-      : super(key: key);
+      required this.imagesChoice,
+      required this.panelController,
+      this.isVideo = false});
 
   @override
   _GalleryState createState() => _GalleryState();
 }
 
 class _GalleryState extends State<Gallery> {
-  GalleryController _galleryController;
+  late GalleryController _galleryController;
   // ScrollController scrollController;
 
   @override
@@ -213,10 +211,10 @@ class _GalleryState extends State<Gallery> {
                 child: Obx(() => GestureDetector(
                       onTap: () {
                         _galleryController
-                            .actionImageChoiceList(imageModel.assetEntity);
+                            .actionImageChoiceList(imageModel.assetEntity!);
                       },
                       child: (_galleryController
-                              .checkImageChoice(imageModel.assetEntity))
+                              .checkImageChoice(imageModel.assetEntity!))
                           ? Container(
                               height: 25,
                               width: 25,
@@ -224,7 +222,7 @@ class _GalleryState extends State<Gallery> {
                                   shape: BoxShape.circle, color: Colors.blue),
                               child: Center(
                                 child: Text(
-                                  '${_galleryController.getIndexImageChoice(imageModel.assetEntity)}',
+                                  '${_galleryController.getIndexImageChoice(imageModel.assetEntity!)}',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),

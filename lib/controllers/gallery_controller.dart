@@ -3,8 +3,8 @@ part of flutter_plugin_gallery;
 class GalleryController extends GetxController {
   List<AssetPathEntity> listFolder = <AssetPathEntity>[];
 
-  final bool isVideo;
-  final int quality;
+  final bool? isVideo;
+  final int? quality;
   GalleryController({this.isVideo, this.quality});
 
   var imageChoiceList = <AssetEntity>[].obs;
@@ -28,7 +28,7 @@ class GalleryController extends GetxController {
     var result = await PhotoManager.requestPermission();
     if (result)
       listFolder = await PhotoManager.getAssetPathList(
-        type:(isVideo)?RequestType.common:RequestType.image,
+        type:(isVideo ?? false)?RequestType.common:RequestType.image,
         hasAll: true,
         onlyAll: true,
       );
@@ -47,8 +47,8 @@ class GalleryController extends GetxController {
               quality: quality ?? 30))));
       if (images.length == imageList.length) {
         imageList.sort((s1, s2) =>
-            s2.assetEntity.createDtSecond.compareTo(
-                s1.assetEntity.createDtSecond));
+            s2.assetEntity!.createDtSecond!.compareTo(
+                s1.assetEntity!.createDtSecond!));
         isLoading(true);
       }
     });
@@ -69,7 +69,7 @@ class GalleryController extends GetxController {
     return imageChoiceList.indexOf(image) + 1;
   }
 
-  Future<void> loadMoreItem({int sizeImage, int qualityImage}) async {
+  Future<void> loadMoreItem({int? sizeImage, int? qualityImage}) async {
     if (imageList.length == listFolder[0].assetCount) return;
     page++;
     final images = await listFolder[0].getAssetListPaged(page, itemInOnePage);
@@ -83,8 +83,8 @@ class GalleryController extends GetxController {
               quality: quality ?? 30))));
     });
     imageList.sort((s1, s2) =>
-        s2.assetEntity.createDtSecond.compareTo(
-            s1.assetEntity.createDtSecond));
+        s2.assetEntity!.createDtSecond!.compareTo(
+            s1.assetEntity!.createDtSecond!));
   }
 
   @override

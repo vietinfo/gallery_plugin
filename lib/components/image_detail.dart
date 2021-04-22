@@ -1,17 +1,16 @@
 part of flutter_plugin_gallery;
 
 class ImageDetail extends StatelessWidget {
-  final String groupName;
+  final String? groupName;
   final List<ImageModel> imageList;
   final int initIndex;
   final ValueChanged<List<AssetEntity>> imagesChoice;
-  final bool isSelectMulti;
+  late final bool isSelectMulti;
   ImageDetail(
-      {this.imageList,
-      this.initIndex,
-      this.groupName,
-      this.imagesChoice,
-      this.isSelectMulti});
+      {required this.imageList,
+      required this.initIndex,
+      this.groupName, required this.imagesChoice,
+      this.isSelectMulti = true});
 
   @override
   Widget build(BuildContext context) {
@@ -49,12 +48,12 @@ class ImageDetail extends StatelessWidget {
                   return GestureDetector(
                     onTap: () => _galleryController.actionImageChoiceList(
                         imageList[_galleryController.currentIndex.value]
-                            .assetEntity),
+                            .assetEntity!),
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8, left: 8),
                       child: (_galleryController.checkImageChoice(
                               imageList[_galleryController.currentIndex.value]
-                                  .assetEntity))
+                                  .assetEntity!))
                           ? Container(
                               height: 25,
                               width: 25,
@@ -121,7 +120,7 @@ class ImageDetail extends StatelessWidget {
                     onTap: () {
                       AssetEntity imageSelect = _galleryController
                           .imageList[_galleryController.currentIndex.value]
-                          .assetEntity;
+                          .assetEntity!;
                       imagesChoice([imageSelect]);
                       Get.back(result: true);
                     },
@@ -150,16 +149,17 @@ class ImageDetail extends StatelessWidget {
     return ExtendedImageGesturePageView.builder(
       itemBuilder: (BuildContext context, int index) {
         return FutureBuilder(
-          future: imageList[index].assetEntity.file,
-          builder: (context, snapshot) {
-            if (snapshot.data == null) {
+          future: imageList[index].assetEntity?.file,
+          builder: (context, AsyncSnapshot<File?> snapshot) {
+            final File? file = snapshot.data;
+            if (file == null) {
               return Container(
                   height: Get.height, width: Get.width, child: loadWidget(30));
-            } else if (imageList[index].assetEntity.type == AssetType.image)
+            } else if (imageList[index].assetEntity?.type == AssetType.image)
               return Container(
                 height: Get.height,
                 width: Get.width,
-                child: _image(snapshot.data),
+                child: _image(file),
               );
             else {
               return Container(
@@ -168,7 +168,7 @@ class ImageDetail extends StatelessWidget {
                   child: VideoDetail(
                     looping: false,
                     autoPlay: true,
-                    file: snapshot.data,
+                    file: file,
                   ));
             }
           },

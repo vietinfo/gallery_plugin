@@ -2,7 +2,7 @@ part of flutter_plugin_gallery;
 
 class ImageItem extends StatelessWidget {
   final ImageModel imageModel;
-  ImageItem({this.imageModel}); // final ThumbOption option;
+  ImageItem({required this.imageModel}); // final ThumbOption option;
 
   @override
   Widget build(BuildContext context) {
@@ -10,9 +10,9 @@ class ImageItem extends StatelessWidget {
   }
 
   Widget _buildImageWidget() {
-    if (imageModel.assetEntity.type == AssetType.image)
+    if (imageModel.assetEntity!.type == AssetType.image)
       return Image.memory(
-        imageModel.uint8list,
+        imageModel.uint8list!,
         width: 200,
         height: 200,
         fit: BoxFit.cover,
@@ -22,7 +22,7 @@ class ImageItem extends StatelessWidget {
       return Stack(
         children: [
           Image.memory(
-            imageModel.uint8list,
+            imageModel.uint8list!,
             width: 200,
             height: 200,
             fit: BoxFit.cover,
