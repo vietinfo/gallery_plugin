@@ -48,21 +48,12 @@ class _GalleryState extends State<Gallery> {
       else
         _galleryController.isRoll.value = false;
     });
-    // scrollController = ScrollController();
-    // scrollController.addListener(() {
-    //   if (scrollController.offset <=
-    //       scrollController.position.minScrollExtent&&
-    //       !scrollController.position.outOfRange ) {
-    //     widget.panelController.hide();
-    //   }
-    // });
     super.initState();
   }
 
   @override
   void dispose() {
     widget.panelController.dispose();
-    // scrollController.dispose();
     super.dispose();
   }
 

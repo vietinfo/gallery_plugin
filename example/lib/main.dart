@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_plugin_gallery/flutter_plugin_gallery.dart';
 import 'package:flutter_plugin_gallery_example/home_page.dart';
-import 'package:flutter_plugin_gallery_example/test.dart';
 import 'package:get/get.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
@@ -26,12 +28,9 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final appTitle = 'Sliding up panel Example';
     return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: appTitle,
-      showPerformanceOverlay: showPerformance,
-      home: HomePage()
-    );
+        debugShowCheckedModeBanner: false,
+        title: appTitle,
+        showPerformanceOverlay: showPerformance,
+        home: HomePage());
   }
 }
-
-
