@@ -11,17 +11,18 @@ class Gallery extends StatefulWidget {
   final ValueChanged<List<AssetEntity>> imagesChoice;
   final SlidingUpPanelController panelController;
   final Widget child;
-  final bool? isVideo;
-  final int? qualityImage;
+  final bool isVideo;
+  final int qualityImage;
+
   Gallery(
       {required this.child,
-      this.qualityImage,
+      this.qualityImage = 30,
       this.groupName,
       this.title,
       this.iconColor,
       this.titleColor,
       this.headerColor,
-        this.primaryColor,
+      this.primaryColor,
       this.isSelectMulti = true,
       required this.imagesChoice,
       required this.panelController,
@@ -32,13 +33,13 @@ class Gallery extends StatefulWidget {
 }
 
 class _GalleryState extends State<Gallery> {
-  late GalleryController _galleryController;
+  late GalleryController _galleryController = Get.find<GalleryController>();
   // ScrollController scrollController;
 
   @override
   void initState() {
-    _galleryController = Get.put(GalleryController(
-        isVideo: widget.isVideo, quality: widget.qualityImage));
+    _galleryController.isVideo = widget.isVideo;
+    _galleryController.quality = widget.qualityImage;
     widget.panelController.addListener(() {
       if (widget.panelController.status == SlidingUpPanelStatus.hidden)
         _galleryController.imageChoiceList.clear();
@@ -67,6 +68,7 @@ class _GalleryState extends State<Gallery> {
 
   @override
   Widget build(BuildContext context) {
+    _galleryController.isVideo = widget.isVideo;
     return Stack(
       children: [
         widget.child,
@@ -118,7 +120,8 @@ class _GalleryState extends State<Gallery> {
                                     width: 45,
                                     decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: widget.primaryColor ?? Colors.blue),
+                                        color:
+                                            widget.primaryColor ?? Colors.blue),
                                     child: Center(
                                       child: Icon(
                                         Icons.send_outlined,
@@ -136,7 +139,8 @@ class _GalleryState extends State<Gallery> {
                                       width: 20,
                                       decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: widget.primaryColor ?? Colors.blue,
+                                          color: widget.primaryColor ??
+                                              Colors.blue,
                                           border: Border.all(
                                               color: Colors.white, width: 3)),
                                       child: Center(
@@ -221,7 +225,8 @@ class _GalleryState extends State<Gallery> {
                               height: 25,
                               width: 25,
                               decoration: BoxDecoration(
-                                  shape: BoxShape.circle, color: widget.primaryColor ?? Colors.blue),
+                                  shape: BoxShape.circle,
+                                  color: widget.primaryColor ?? Colors.blue),
                               child: Center(
                                 child: Text(
                                   '${_galleryController.getIndexImageChoice(imageModel.assetEntity!)}',

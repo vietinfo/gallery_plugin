@@ -3,9 +3,8 @@ part of flutter_plugin_gallery;
 class GalleryController extends GetxController {
   List<AssetPathEntity> listFolder = <AssetPathEntity>[];
 
-  final bool? isVideo;
-  final int? quality;
-  GalleryController({this.isVideo, this.quality});
+  bool isVideo = false;
+  int quality = 0;
 
   RxList<AssetEntity> imageChoiceList = <AssetEntity>[].obs;
   RxList<ImageModel> imageList = <ImageModel>[].obs;
@@ -14,7 +13,6 @@ class GalleryController extends GetxController {
   RxInt currentIndex = 0.obs;
 
   RxBool isRoll = false.obs;
-
 
   ScrollController scrollController = ScrollController();
   int page = 0;
@@ -28,7 +26,7 @@ class GalleryController extends GetxController {
     var result = await PhotoManager.requestPermission();
     if (result)
       listFolder = await PhotoManager.getAssetPathList(
-        type:(isVideo ?? false)?RequestType.common:RequestType.image,
+        type: (isVideo ?? false) ? RequestType.common : RequestType.image,
         hasAll: true,
         onlyAll: true,
       );
@@ -37,7 +35,7 @@ class GalleryController extends GetxController {
     }
 
     final images = await listFolder[0].getAssetListPaged(0, itemInOnePage);
-    for (final element in images){
+    for (final element in images) {
       imageList.add(ImageModel(
           assetEntity: element,
           uint8list: await element.thumbDataWithOption(ThumbOption(
@@ -46,9 +44,8 @@ class GalleryController extends GetxController {
               format: ThumbFormat.jpeg,
               quality: quality ?? 30))));
       if (images.length == imageList.length) {
-        imageList.sort((s1, s2) =>
-            s2.assetEntity!.createDtSecond!.compareTo(
-                s1.assetEntity!.createDtSecond!));
+        imageList.sort((s1, s2) => s2.assetEntity!.createDtSecond!
+            .compareTo(s1.assetEntity!.createDtSecond!));
         isLoading(true);
       }
     }
@@ -73,7 +70,7 @@ class GalleryController extends GetxController {
     if (imageList.length == listFolder[0].assetCount) return;
     page++;
     final images = await listFolder[0].getAssetListPaged(page, itemInOnePage);
-    for (final element in images){
+    for (final element in images) {
       imageList.add(ImageModel(
           assetEntity: element,
           uint8list: await element.thumbDataWithOption(ThumbOption(
@@ -82,9 +79,8 @@ class GalleryController extends GetxController {
               format: ThumbFormat.jpeg,
               quality: quality ?? 30))));
     }
-    imageList.sort((s1, s2) =>
-        s2.assetEntity!.createDtSecond!.compareTo(
-            s1.assetEntity!.createDtSecond!));
+    imageList.sort((s1, s2) => s2.assetEntity!.createDtSecond!
+        .compareTo(s1.assetEntity!.createDtSecond!));
   }
 
   @override

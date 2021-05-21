@@ -1,4 +1,3 @@
-
 library flutter_plugin_gallery;
 
 import 'dart:io';
@@ -21,3 +20,7 @@ part 'components/loading_widget.dart';
 part 'components/video_detail.dart';
 part 'controllers/gallery_controller.dart';
 part 'models/image_model.dart';
+
+void init() {
+  Get.create(() => GalleryController());
+}
