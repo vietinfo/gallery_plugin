@@ -26,7 +26,7 @@ class GalleryController extends GetxController {
     var result = await PhotoManager.requestPermission();
     if (result)
       listFolder = await PhotoManager.getAssetPathList(
-        type: (isVideo ?? false) ? RequestType.common : RequestType.image,
+        type: isVideo ? RequestType.common : RequestType.image,
         hasAll: true,
         onlyAll: true,
       );
@@ -42,7 +42,7 @@ class GalleryController extends GetxController {
               width: 200,
               height: 200,
               format: ThumbFormat.jpeg,
-              quality: quality ?? 30))));
+              quality: quality))));
       if (images.length == imageList.length) {
         imageList.sort((s1, s2) => s2.assetEntity!.createDtSecond!
             .compareTo(s1.assetEntity!.createDtSecond!));
@@ -77,7 +77,7 @@ class GalleryController extends GetxController {
               width: 200,
               height: 200,
               format: ThumbFormat.jpeg,
-              quality: quality ?? 30))));
+              quality: quality))));
     }
     imageList.sort((s1, s2) => s2.assetEntity!.createDtSecond!
         .compareTo(s1.assetEntity!.createDtSecond!));
