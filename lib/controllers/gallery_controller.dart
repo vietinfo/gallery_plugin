@@ -4,7 +4,7 @@ class GalleryController extends GetxController {
   List<AssetPathEntity> listFolder = <AssetPathEntity>[];
 
   bool isVideo = false;
-  int quality = 0;
+  int quality = 30;
 
   RxList<AssetEntity> imageChoiceList = <AssetEntity>[].obs;
   RxList<ImageModel> imageList = <ImageModel>[].obs;
