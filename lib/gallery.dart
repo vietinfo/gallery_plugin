@@ -6,6 +6,7 @@ class Gallery extends StatefulWidget {
   final Color? titleColor;
   final String? title;
   final Color? headerColor;
+  final Color? primaryColor;
   final bool isSelectMulti;
   final ValueChanged<List<AssetEntity>> imagesChoice;
   final SlidingUpPanelController panelController;
@@ -20,6 +21,7 @@ class Gallery extends StatefulWidget {
       this.iconColor,
       this.titleColor,
       this.headerColor,
+        this.primaryColor,
       this.isSelectMulti = true,
       required this.imagesChoice,
       required this.panelController,
@@ -116,7 +118,7 @@ class _GalleryState extends State<Gallery> {
                                     width: 45,
                                     decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: Colors.blue),
+                                        color: widget.primaryColor ?? Colors.blue),
                                     child: Center(
                                       child: Icon(
                                         Icons.send_outlined,
@@ -134,7 +136,7 @@ class _GalleryState extends State<Gallery> {
                                       width: 20,
                                       decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: Colors.blue,
+                                          color: widget.primaryColor ?? Colors.blue,
                                           border: Border.all(
                                               color: Colors.white, width: 3)),
                                       child: Center(
@@ -219,7 +221,7 @@ class _GalleryState extends State<Gallery> {
                               height: 25,
                               width: 25,
                               decoration: BoxDecoration(
-                                  shape: BoxShape.circle, color: Colors.blue),
+                                  shape: BoxShape.circle, color: widget.primaryColor ?? Colors.blue),
                               child: Center(
                                 child: Text(
                                   '${_galleryController.getIndexImageChoice(imageModel.assetEntity!)}',

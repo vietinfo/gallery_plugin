@@ -19,11 +19,12 @@ class _TestState extends State<Test> {
             child: MaterialButton(
               color: Colors.yellow,
               onPressed: () => panelController.anchor(),
-              child: Text('Click'),
+              child: Text('Show Gallery'),
             ),
           ),
           isSelectMulti: true,
           isVideo: true,
+          qualityImage: 70,
           panelController: panelController,
           imagesChoice: (images) {
             print(images.length);

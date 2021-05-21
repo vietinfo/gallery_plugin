@@ -1,6 +1,7 @@
 part of flutter_plugin_gallery;
 
 class ImageDetail extends StatelessWidget {
+  final Color? primaryColor;
   final String? groupName;
   final List<ImageModel> imageList;
   final int initIndex;
@@ -9,6 +10,7 @@ class ImageDetail extends StatelessWidget {
   ImageDetail(
       {required this.imageList,
       required this.initIndex,
+        this.primaryColor,
       this.groupName, required this.imagesChoice,
       this.isSelectMulti = true});
 
@@ -103,7 +105,7 @@ class ImageDetail extends StatelessWidget {
                           height: 60,
                           width: 60,
                           decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: Colors.blue),
+                              shape: BoxShape.circle, color: primaryColor ?? Colors.blue),
                           child: Center(
                             child: Icon(
                               Icons.send_outlined,
@@ -128,7 +130,7 @@ class ImageDetail extends StatelessWidget {
                       height: 60,
                       width: 60,
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: Colors.blue),
+                          shape: BoxShape.circle, color: primaryColor ?? Colors.blue),
                       child: Center(
                         child: Icon(
                           Icons.check,
@@ -195,7 +197,6 @@ class ImageDetail extends StatelessWidget {
         switch (state.extendedImageLoadState) {
           case LoadState.loading:
             return loadWidget(30);
-            break;
           case LoadState.completed:
             return ExtendedImage.file(
               file,

@@ -12,8 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
   get: ^4.1.4
-  photo_manager: ^1.1.4
-  extended_image: ^4.0.1
+  photo_manager: ^1.2.0
+  extended_image: ^4.1.0
   video_player: ^2.1.1
   chewie: ^1.0.0
 

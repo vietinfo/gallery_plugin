@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_plugin_gallery_example/home_page.dart';
 import 'package:flutter_plugin_gallery_example/test.dart';
 import 'package:get/get.dart';
 
@@ -28,7 +29,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       title: appTitle,
       showPerformanceOverlay: showPerformance,
-      home: Test()
+      home: HomePage()
     );
   }
 }

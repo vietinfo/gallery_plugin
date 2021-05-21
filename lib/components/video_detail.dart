@@ -17,44 +17,53 @@ class VideoDetail extends StatefulWidget {
 
 class _VideoDetailState extends State<VideoDetail> {
 
+  late VideoPlayerController _videoPlayerController;
   late ChewieController _chewieController;
-  late VideoPlayerController videoPlayerController;
+  late Future<void> _futureInitVideoPlayer;
+
+  Future<void> initVideoPlayer() async{
+    await _videoPlayerController.initialize();
+    setState(() {
+      _chewieController = ChewieController(
+        videoPlayerController: _videoPlayerController,
+        aspectRatio: _videoPlayerController.value.aspectRatio,
+        autoPlay: false,
+        looping: false,
+      );
+    });
+  }
 
   @override
   void initState() {
     super.initState();
-    videoPlayerController = VideoPlayerController.file(widget.file);
-    _chewieController = ChewieController(
-      videoPlayerController: videoPlayerController,
-      aspectRatio: 9/16,
-      autoInitialize: true,
-      autoPlay: widget.autoPlay,
-      looping: widget.looping,
-      errorBuilder: (context, errorMessage) {
-        return Center(
-          child: Text(
-            errorMessage,
-            style: TextStyle(color: Colors.white),
-          ),
-        );
-      },
-    );
+    _videoPlayerController = VideoPlayerController.file(widget.file);
+    _futureInitVideoPlayer = initVideoPlayer();
   }
 
   @override
   void dispose() {
     super.dispose();
     _chewieController.dispose();
-    videoPlayerController.dispose();
+    _videoPlayerController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Chewie(
-        controller: _chewieController,
-      ),
+    return Center(
+        child: FutureBuilder(
+          future: _futureInitVideoPlayer,
+          builder: (context, snapshot) {
+            if(snapshot.connectionState == ConnectionState.done)
+              return Center(
+                child: Chewie(
+                  controller: _chewieController,
+                ),
+              );
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          },
+        )
     );
   }
 }

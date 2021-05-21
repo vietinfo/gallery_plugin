@@ -7,17 +7,17 @@ class GalleryController extends GetxController {
   final int? quality;
   GalleryController({this.isVideo, this.quality});
 
-  var imageChoiceList = <AssetEntity>[].obs;
-  var imageList = <ImageModel>[].obs;
-  var isLoading = false.obs;
-  var isShowGallery = true.obs;
-  var currentIndex = 0.obs;
+  RxList<AssetEntity> imageChoiceList = <AssetEntity>[].obs;
+  RxList<ImageModel> imageList = <ImageModel>[].obs;
+  RxBool isLoading = false.obs;
+  RxBool isShowGallery = true.obs;
+  RxInt currentIndex = 0.obs;
 
-  var isRoll = false.obs;
+  RxBool isRoll = false.obs;
 
 
   ScrollController scrollController = ScrollController();
-  var page = 0;
+  int page = 0;
   int itemInOnePage = 21;
 
   Future<void> refreshGalleryList() async {
@@ -37,7 +37,7 @@ class GalleryController extends GetxController {
     }
 
     final images = await listFolder[0].getAssetListPaged(0, itemInOnePage);
-    images.forEach((element) async {
+    for (final element in images){
       imageList.add(ImageModel(
           assetEntity: element,
           uint8list: await element.thumbDataWithOption(ThumbOption(
@@ -51,7 +51,7 @@ class GalleryController extends GetxController {
                 s1.assetEntity!.createDtSecond!));
         isLoading(true);
       }
-    });
+    }
   }
 
   bool checkImageChoice(AssetEntity image) {
@@ -73,7 +73,7 @@ class GalleryController extends GetxController {
     if (imageList.length == listFolder[0].assetCount) return;
     page++;
     final images = await listFolder[0].getAssetListPaged(page, itemInOnePage);
-    images.forEach((element) async {
+    for (final element in images){
       imageList.add(ImageModel(
           assetEntity: element,
           uint8list: await element.thumbDataWithOption(ThumbOption(
@@ -81,7 +81,7 @@ class GalleryController extends GetxController {
               height: 200,
               format: ThumbFormat.jpeg,
               quality: quality ?? 30))));
-    });
+    }
     imageList.sort((s1, s2) =>
         s2.assetEntity!.createDtSecond!.compareTo(
             s1.assetEntity!.createDtSecond!));
