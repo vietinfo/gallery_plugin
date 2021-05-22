@@ -7,16 +7,17 @@ class ImageDetail extends StatelessWidget {
   final int initIndex;
   final ValueChanged<List<AssetEntity>> imagesChoice;
   late final bool isSelectMulti;
+  final GalleryController galleryController;
   ImageDetail(
       {required this.imageList,
       required this.initIndex,
+        required this.galleryController,
         this.primaryColor,
       this.groupName, required this.imagesChoice,
       this.isSelectMulti = true});
 
   @override
   Widget build(BuildContext context) {
-    GalleryController _galleryController = Get.find<GalleryController>();
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -25,7 +26,7 @@ class ImageDetail extends StatelessWidget {
         actions: [
           (isSelectMulti)
               ? Obx(() {
-                  if (_galleryController.imageChoiceList.length > 0)
+                  if (galleryController.imageChoiceList.length > 0)
                     return Container(
                       height: 25,
                       width: 25,
@@ -35,7 +36,7 @@ class ImageDetail extends StatelessWidget {
                           color: Colors.transparent),
                       child: Center(
                         child: Text(
-                          '${_galleryController.imageChoiceList.length}',
+                          '${galleryController.imageChoiceList.length}',
                           style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         ),
@@ -48,13 +49,13 @@ class ImageDetail extends StatelessWidget {
           (isSelectMulti)
               ? Obx(() {
                   return GestureDetector(
-                    onTap: () => _galleryController.actionImageChoiceList(
-                        imageList[_galleryController.currentIndex.value]
+                    onTap: () => galleryController.actionImageChoiceList(
+                        imageList[galleryController.currentIndex.value]
                             .assetEntity!),
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8, left: 8),
-                      child: (_galleryController.checkImageChoice(
-                              imageList[_galleryController.currentIndex.value]
+                      child: (galleryController.checkImageChoice(
+                              imageList[galleryController.currentIndex.value]
                                   .assetEntity!))
                           ? Container(
                               height: 25,
@@ -88,22 +89,22 @@ class ImageDetail extends StatelessWidget {
       ),
       body: Stack(
         children: [
-          buildImage(_galleryController),
+          buildImage(galleryController),
           Positioned(
             bottom: 20,
             right: 10,
             child: (isSelectMulti)
                 ? Obx(() {
-                    if (_galleryController.imageChoiceList.length > 0)
+                    if (galleryController.imageChoiceList.length > 0)
                       return GestureDetector(
                         onTap: () {
-                          imagesChoice(_galleryController.imageChoiceList);
-                          _galleryController.imageChoiceList.clear();
+                          imagesChoice(galleryController.imageChoiceList);
+                          galleryController.imageChoiceList.clear();
                           Get.back(result: true);
                         },
                         child: Container(
-                          height: 60,
-                          width: 60,
+                          height: 50,
+                          width: 50,
                           decoration: BoxDecoration(
                               shape: BoxShape.circle, color: primaryColor ?? Colors.blue),
                           child: Center(
@@ -120,20 +121,20 @@ class ImageDetail extends StatelessWidget {
                   })
                 : GestureDetector(
                     onTap: () {
-                      AssetEntity imageSelect = _galleryController
-                          .imageList[_galleryController.currentIndex.value]
+                      AssetEntity imageSelect = galleryController
+                          .imageList[galleryController.currentIndex.value]
                           .assetEntity!;
                       imagesChoice([imageSelect]);
                       Get.back(result: true);
                     },
                     child: Container(
-                      height: 60,
-                      width: 60,
+                      height: 50,
+                      width: 50,
                       decoration: BoxDecoration(
                           shape: BoxShape.circle, color: primaryColor ?? Colors.blue),
                       child: Center(
                         child: Icon(
-                          Icons.check,
+                          Icons.send_outlined,
                           size: 28,
                           color: Colors.white,
                         ),

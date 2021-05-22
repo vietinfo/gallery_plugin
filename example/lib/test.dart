@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_plugin_gallery/flutter_plugin_gallery.dart';
-import 'package:flutter_plugin_gallery_example/test2.dart';
 import 'package:get/get.dart';
 
 class Test extends StatefulWidget {
@@ -23,15 +22,7 @@ class _TestState extends State<Test> {
                 child: MaterialButton(
                   color: Colors.yellow,
                   onPressed: () => panelController.anchor(),
-                  child: Text('Show Gallery'),
-                ),
-              ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: MaterialButton(
-                  color: Colors.yellow,
-                  onPressed: () => Get.to(Test2()),
-                  child: Text('Go test 2'),
+                  child: Text('Show Gallery Test 1'),
                 ),
               ),
             ],
@@ -41,7 +32,9 @@ class _TestState extends State<Test> {
           qualityImage: 70,
           panelController: panelController,
           imagesChoice: (images) {
-            print(images.length);
+            print('Test');
+            print(images.first.id);
+            print('Test');
           },
         ),
       ),
@@ -50,7 +43,6 @@ class _TestState extends State<Test> {
 
   @override
   void dispose() {
-    // panelController.dispose();
     super.dispose();
   }
 }

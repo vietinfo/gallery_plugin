@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_plugin_gallery/flutter_plugin_gallery.dart';
 import 'package:flutter_plugin_gallery_example/home_page.dart';
 import 'package:get/get.dart';
 

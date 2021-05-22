@@ -33,8 +33,8 @@ class Gallery extends StatefulWidget {
 }
 
 class _GalleryState extends State<Gallery> {
+
   late GalleryController _galleryController = Get.find<GalleryController>();
-  // ScrollController scrollController;
 
   @override
   void initState() {
@@ -189,6 +189,7 @@ class _GalleryState extends State<Gallery> {
           onTap: () async {
             _galleryController.currentIndex.value = index;
             var result = await Get.to(() => ImageDetail(
+              galleryController: _galleryController,
                   isSelectMulti: widget.isSelectMulti,
                   imageList: _galleryController.imageList,
                   initIndex: index,

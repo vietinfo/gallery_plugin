@@ -19,7 +19,7 @@ class _Test2State extends State<Test2> {
             child: MaterialButton(
               color: Colors.yellow,
               onPressed: () => panelController.anchor(),
-              child: Text('Show Gallery'),
+              child: Text('Show Gallery test 2'),
             ),
           ),
           isSelectMulti: true,
@@ -27,7 +27,9 @@ class _Test2State extends State<Test2> {
           qualityImage: 70,
           panelController: panelController,
           imagesChoice: (images) {
-            print(images.length);
+            print('Test2');
+            print(images.first.id);
+            print('Test2');
           },
         ),
       ),
@@ -36,7 +38,6 @@ class _Test2State extends State<Test2> {
 
   @override
   void dispose() {
-    // panelController.dispose();
     super.dispose();
   }
 }
