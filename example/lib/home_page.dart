@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_plugin_gallery/flutter_plugin_gallery.dart';
-import 'package:flutter_plugin_gallery_example/test2.dart';
 import 'package:get/get.dart';
 
 import 'test.dart';
+import 'test2.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key key}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();

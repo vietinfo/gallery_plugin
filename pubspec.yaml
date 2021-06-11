@@ -1,8 +1,7 @@
 name: flutter_plugin_gallery
 description: A new Flutter plugin.
 version: 0.0.2
-author:
-homepage:
+author: devhp
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
@@ -12,10 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
   get: ^4.1.4
-  photo_manager: ^1.2.0
+  photo_manager: ^1.2.2
   extended_image: ^4.1.0
-  video_player: ^2.1.1
-  chewie: ^1.0.0
+  video_player: ^2.1.6
+  chewie: ^1.2.2
 
 dev_dependencies:
   flutter_test:

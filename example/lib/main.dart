@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_plugin_gallery_example/home_page.dart';
 import 'package:get/get.dart';
+
+import 'home_page.dart';
 
 void main() {
   runApp(MyApp());
