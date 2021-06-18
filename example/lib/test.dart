@@ -9,6 +9,7 @@ class Test extends StatefulWidget {
 
 class _TestState extends State<Test> {
   SlidingUpPanelController panelController = SlidingUpPanelController();
+  GalleryController galleryController = Get.find<GalleryController>();
 
   @override
   Widget build(BuildContext context) {
@@ -18,24 +19,35 @@ class _TestState extends State<Test> {
           child: Column(
             children: [
               Align(
-                alignment: Alignment.topCenter,
+                alignment: Alignment.topLeft,
                 child: MaterialButton(
                   color: Colors.yellow,
-                  onPressed: () => panelController.anchor(),
-                  child: Text('Show Gallery Test 1'),
+                  onPressed: () async {
+                    await galleryController.refreshGalleryList();
+                    panelController.anchor();
+                  },
+                  child: Text('Show image'),
+                ),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: MaterialButton(
+                  color: Colors.yellow,
+                  onPressed: () async {
+                    await galleryController.refreshGalleryList(onlyVideo: true);
+                    panelController.anchor();
+                  },
+                  child: Text('Show video'),
                 ),
               ),
             ],
           ),
           isSelectMulti: true,
-          isVideo: true,
+          isVideo: false,
           qualityImage: 70,
           panelController: panelController,
-          imagesChoice: (images) {
-            print('Test');
-            print(images.first.id);
-            print('Test');
-          },
+          imagesChoice: (images) {},
+          galleryController: galleryController,
         ),
       ),
     );

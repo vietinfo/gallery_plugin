@@ -9,6 +9,7 @@ class Gallery extends StatefulWidget {
   final Color? primaryColor;
   final bool isSelectMulti;
   final ValueChanged<List<AssetEntity>> imagesChoice;
+  final GalleryController galleryController;
   final SlidingUpPanelController panelController;
   final Widget child;
   final bool isVideo;
@@ -16,6 +17,7 @@ class Gallery extends StatefulWidget {
 
   Gallery(
       {required this.child,
+      required this.galleryController,
       this.qualityImage = 30,
       this.groupName,
       this.title,
@@ -34,19 +36,18 @@ class Gallery extends StatefulWidget {
 
 class _GalleryState extends State<Gallery> {
 
-  late GalleryController _galleryController = Get.find<GalleryController>();
-
   @override
   void initState() {
-    _galleryController.isVideo = widget.isVideo;
-    _galleryController.quality = widget.qualityImage;
+    
+    widget.galleryController.isVideo = widget.isVideo;
+    widget.galleryController.quality = widget.qualityImage;
     widget.panelController.addListener(() {
       if (widget.panelController.status == SlidingUpPanelStatus.hidden)
-        _galleryController.imageChoiceList.clear();
+        widget.galleryController.imageChoiceList.clear();
       if (widget.panelController.status == SlidingUpPanelStatus.expanded)
-        _galleryController.isRoll.value = true;
+        widget.galleryController.isRoll.value = true;
       else
-        _galleryController.isRoll.value = false;
+        widget.galleryController.isRoll.value = false;
     });
     super.initState();
   }
@@ -59,7 +60,7 @@ class _GalleryState extends State<Gallery> {
 
   @override
   Widget build(BuildContext context) {
-    _galleryController.isVideo = widget.isVideo;
+    widget.galleryController.isVideo = widget.isVideo;
     return Stack(
       children: [
         widget.child,
@@ -95,7 +96,7 @@ class _GalleryState extends State<Gallery> {
                 ),
                 Spacer(),
                 (widget.isSelectMulti)
-                    ? Obx(() => (_galleryController.imageChoiceList.length > 0)
+                    ? Obx(() => (widget.galleryController.imageChoiceList.length > 0)
                         ? Padding(
                             padding: const EdgeInsets.only(right: 8.0),
                             child: Stack(
@@ -103,7 +104,7 @@ class _GalleryState extends State<Gallery> {
                                 GestureDetector(
                                   onTap: () {
                                     widget.imagesChoice(
-                                        _galleryController.imageChoiceList);
+                                        widget.galleryController.imageChoiceList);
                                     widget.panelController.hide();
                                   },
                                   child: Container(
@@ -136,7 +137,7 @@ class _GalleryState extends State<Gallery> {
                                               color: Colors.white, width: 3)),
                                       child: Center(
                                         child: Text(
-                                          '${_galleryController.imageChoiceList.length}',
+                                          '${widget.galleryController.imageChoiceList.length}',
                                           style: TextStyle(
                                               fontSize: 9,
                                               color: Colors.white,
@@ -153,13 +154,13 @@ class _GalleryState extends State<Gallery> {
             ),
           ),
           body: Container(
-            child: Obx(() => (_galleryController.isLoading.value)
+            child: Obx(() => (widget.galleryController.isLoading.value)
                 ? GridView.builder(
                     // controller: scrollController,
-                    physics: (_galleryController.isRoll.value)
+                    physics: (widget.galleryController.isRoll.value)
                         ? null
                         : NeverScrollableScrollPhysics(),
-                    itemCount: _galleryController.imageList.length,
+                    itemCount: widget.galleryController.imageList.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       mainAxisSpacing: 5,
@@ -178,20 +179,20 @@ class _GalleryState extends State<Gallery> {
   }
 
   Widget _buildImage(BuildContext context, int index) {
-    if (_galleryController.imageList.length - 9 == index)
-      _galleryController.loadMoreItem();
+    if (widget.galleryController.imageList.length - 9 == index)
+      widget.galleryController.loadMoreItem();
 
-    final ImageModel imageModel = _galleryController.imageList[index];
+    final ImageModel imageModel = widget.galleryController.imageList[index];
 
     return Stack(
       children: [
         GestureDetector(
           onTap: () async {
-            _galleryController.currentIndex.value = index;
+            widget.galleryController.currentIndex.value = index;
             var result = await Get.to(() => ImageDetail(
-              galleryController: _galleryController,
+              galleryController: widget.galleryController,
                   isSelectMulti: widget.isSelectMulti,
-                  imageList: _galleryController.imageList,
+                  imageList: widget.galleryController.imageList,
                   initIndex: index,
                   groupName: widget.groupName,
                   imagesChoice: widget.imagesChoice,
@@ -208,10 +209,10 @@ class _GalleryState extends State<Gallery> {
                 right: 5,
                 child: Obx(() => GestureDetector(
                       onTap: () {
-                        _galleryController
+                        widget.galleryController
                             .actionImageChoiceList(imageModel.assetEntity!);
                       },
-                      child: (_galleryController
+                      child: (widget.galleryController
                               .checkImageChoice(imageModel.assetEntity!))
                           ? Container(
                               height: 25,
@@ -221,7 +222,7 @@ class _GalleryState extends State<Gallery> {
                                   color: widget.primaryColor ?? Colors.blue),
                               child: Center(
                                 child: Text(
-                                  '${_galleryController.getIndexImageChoice(imageModel.assetEntity!)}',
+                                  '${widget.galleryController.getIndexImageChoice(imageModel.assetEntity!)}',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),

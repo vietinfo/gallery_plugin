@@ -2,9 +2,11 @@ part of flutter_plugin_gallery;
 
 class GalleryController extends GetxController {
   List<AssetPathEntity> listFolder = <AssetPathEntity>[];
+  List<AssetPathEntity> listFolderOnlyVideo = <AssetPathEntity>[];
 
   bool isVideo = false;
   int quality = 30;
+  bool isOnlyVideo = false;
 
   RxList<AssetEntity> imageChoiceList = <AssetEntity>[].obs;
   RxList<ImageModel> imageList = <ImageModel>[].obs;
@@ -18,23 +20,35 @@ class GalleryController extends GetxController {
   int page = 0;
   int itemInOnePage = 21;
 
-  Future<void> refreshGalleryList() async {
+  Future<void> refreshGalleryList({bool onlyVideo = false}) async {
     isLoading(false);
-    listFolder.clear();
     imageList.clear();
+    page = 0;
+    isOnlyVideo = onlyVideo;
 
     var result = await PhotoManager.requestPermission();
-    if (result)
-      listFolder = await PhotoManager.getAssetPathList(
-        type: isVideo ? RequestType.common : RequestType.image,
-        hasAll: true,
-        onlyAll: true,
-      );
+    if (result) {
+      if (listFolderOnlyVideo.isEmpty)
+        listFolderOnlyVideo = await PhotoManager.getAssetPathList(
+          type: RequestType.video,
+          hasAll: true,
+          onlyAll: true,
+        );
+      if (listFolder.isEmpty)
+        listFolder = await PhotoManager.getAssetPathList(
+          type: isVideo ? RequestType.common : RequestType.image,
+          hasAll: true,
+          onlyAll: true,
+        );
+    }
     else {
       return;
     }
 
-    final images = await listFolder[0].getAssetListPaged(0, itemInOnePage);
+    late List<AssetEntity> images;
+    if (!isOnlyVideo)
+      images = await listFolder[0].getAssetListPaged(0, itemInOnePage);
+    else images = await listFolderOnlyVideo[0].getAssetListPaged(0, itemInOnePage);
     for (final element in images) {
       imageList.add(ImageModel(
           assetEntity: element,
@@ -69,7 +83,12 @@ class GalleryController extends GetxController {
   Future<void> loadMoreItem({int? sizeImage, int? qualityImage}) async {
     if (imageList.length == listFolder[0].assetCount) return;
     page++;
-    final images = await listFolder[0].getAssetListPaged(page, itemInOnePage);
+    late List<AssetEntity> images;
+    if (!isOnlyVideo)
+      images = await listFolder[0].getAssetListPaged(page, itemInOnePage);
+    else
+      images =
+          await listFolderOnlyVideo[0].getAssetListPaged(page, itemInOnePage);
     for (final element in images) {
       imageList.add(ImageModel(
           assetEntity: element,
