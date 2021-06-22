@@ -1,12 +1,12 @@
 part of flutter_plugin_gallery;
 
 class Gallery extends StatefulWidget {
-  final String? groupName;
-  final Color? iconColor;
-  final Color? titleColor;
-  final String? title;
-  final Color? headerColor;
-  final Color? primaryColor;
+  final String groupName;
+  final Color iconColor;
+  final Color titleColor;
+  final String title;
+  final Color headerColor;
+  final Color primaryColor;
   final bool isSelectMulti;
   final ValueChanged<List<AssetEntity>> imagesChoice;
   final GalleryController galleryController;
@@ -19,12 +19,12 @@ class Gallery extends StatefulWidget {
       {required this.child,
       required this.galleryController,
       this.qualityImage = 30,
-      this.groupName,
-      this.title,
-      this.iconColor,
-      this.titleColor,
-      this.headerColor,
-      this.primaryColor,
+      this.groupName = '',
+      this.title = 'Thư viện',
+      this.iconColor = Colors.blue,
+      this.titleColor = Colors.black,
+      this.headerColor = Colors.white,
+      this.primaryColor = Colors.blue,
       this.isSelectMulti = true,
       required this.imagesChoice,
       required this.panelController,
@@ -67,7 +67,7 @@ class _GalleryState extends State<Gallery> {
         SlideUpPanelWidget(
           header: Container(
             decoration: BoxDecoration(
-              color: widget.headerColor ?? Colors.white,
+              color: widget.headerColor,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(10.0),
                 topRight: Radius.circular(10.0),
@@ -83,16 +83,16 @@ class _GalleryState extends State<Gallery> {
                     padding: const EdgeInsets.only(left: 8.0, right: 16),
                     child: Icon(
                       Icons.clear,
-                      color: widget.iconColor ?? Colors.black,
+                      color: widget.iconColor,
                     ),
                   ),
                 ),
                 Text(
-                  widget.title ?? 'Thư viện',
+                  widget.title,
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
-                      color: widget.titleColor ?? Colors.black),
+                      color: widget.titleColor),
                 ),
                 Spacer(),
                 (widget.isSelectMulti)
@@ -113,7 +113,7 @@ class _GalleryState extends State<Gallery> {
                                     decoration: BoxDecoration(
                                         shape: BoxShape.circle,
                                         color:
-                                            widget.primaryColor ?? Colors.blue),
+                                            widget.primaryColor),
                                     child: Center(
                                       child: Icon(
                                         Icons.send_outlined,
@@ -131,8 +131,7 @@ class _GalleryState extends State<Gallery> {
                                       width: 20,
                                       decoration: BoxDecoration(
                                           shape: BoxShape.circle,
-                                          color: widget.primaryColor ??
-                                              Colors.blue,
+                                          color: widget.primaryColor,
                                           border: Border.all(
                                               color: Colors.white, width: 3)),
                                       child: Center(
@@ -194,6 +193,7 @@ class _GalleryState extends State<Gallery> {
                   isSelectMulti: widget.isSelectMulti,
                   imageList: widget.galleryController.imageList,
                   initIndex: index,
+                  primaryColor: widget.primaryColor,
                   groupName: widget.groupName,
                   imagesChoice: widget.imagesChoice,
                 ));
@@ -219,7 +219,7 @@ class _GalleryState extends State<Gallery> {
                               width: 25,
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: widget.primaryColor ?? Colors.blue),
+                                  color: widget.primaryColor),
                               child: Center(
                                 child: Text(
                                   '${widget.galleryController.getIndexImageChoice(imageModel.assetEntity!)}',
@@ -235,7 +235,7 @@ class _GalleryState extends State<Gallery> {
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border:
-                                      Border.all(color: Colors.white, width: 2),
+                                      Border.all(color: widget.primaryColor, width: 3),
                                   color: Colors.transparent),
                             ),
                     )))

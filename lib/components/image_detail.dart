@@ -1,8 +1,8 @@
 part of flutter_plugin_gallery;
 
 class ImageDetail extends StatelessWidget {
-  final Color? primaryColor;
-  final String? groupName;
+  final Color primaryColor;
+  final String groupName;
   final List<ImageModel> imageList;
   final int initIndex;
   final ValueChanged<List<AssetEntity>> imagesChoice;
@@ -12,8 +12,8 @@ class ImageDetail extends StatelessWidget {
       {required this.imageList,
       required this.initIndex,
         required this.galleryController,
-        this.primaryColor,
-      this.groupName, required this.imagesChoice,
+        this.primaryColor = Colors.blue,
+      this.groupName = '', required this.imagesChoice,
       this.isSelectMulti = true});
 
   @override
@@ -22,7 +22,7 @@ class ImageDetail extends StatelessWidget {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
-        title: Text(groupName ?? ' '),
+        title: Text(groupName),
         actions: [
           (isSelectMulti)
               ? Obx(() {
@@ -32,7 +32,7 @@ class ImageDetail extends StatelessWidget {
                       width: 25,
                       decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          border: Border.all(color: Colors.white, width: 2),
+                          border: Border.all(color: Colors.white, width: 3),
                           color: Colors.transparent),
                       child: Center(
                         child: Text(
@@ -63,7 +63,7 @@ class ImageDetail extends StatelessWidget {
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border:
-                                      Border.all(color: Colors.white, width: 2),
+                                      Border.all(color: Colors.white, width: 3),
                                   color: Colors.blue),
                               child: Center(
                                 child: Icon(
@@ -78,7 +78,7 @@ class ImageDetail extends StatelessWidget {
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border:
-                                      Border.all(color: Colors.white, width: 2),
+                                      Border.all(color: Colors.white, width: 3),
                                   color: Colors.transparent),
                             ),
                     ),
@@ -106,7 +106,7 @@ class ImageDetail extends StatelessWidget {
                           height: 50,
                           width: 50,
                           decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: primaryColor ?? Colors.blue),
+                              shape: BoxShape.circle, color: primaryColor),
                           child: Center(
                             child: Icon(
                               Icons.send_outlined,
@@ -131,7 +131,7 @@ class ImageDetail extends StatelessWidget {
                       height: 50,
                       width: 50,
                       decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: primaryColor ?? Colors.blue),
+                          shape: BoxShape.circle, color: primaryColor),
                       child: Center(
                         child: Icon(
                           Icons.send_outlined,
@@ -219,7 +219,6 @@ class ImageDetail extends StatelessWidget {
                 );
               },
             );
-            break;
           default:
             return loadWidget(30);
         }
