@@ -152,7 +152,8 @@ class _GalleryState extends State<Gallery> {
               ],
             ),
           ),
-          body: Container(
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Obx(() => (widget.galleryController.isLoading.value)
                 ? GridView.builder(
                     // controller: scrollController,
@@ -167,7 +168,6 @@ class _GalleryState extends State<Gallery> {
                     ),
                     itemBuilder: _buildImage)
                 : loadWidget(20)),
-            color: Colors.white,
           ),
           anchor: 0.4,
           panelController: widget.panelController,
@@ -205,8 +205,8 @@ class _GalleryState extends State<Gallery> {
         ),
         (widget.isSelectMulti)
             ? Positioned(
-                top: 5,
-                right: 5,
+                top: 3,
+                right: 3,
                 child: Obx(() => GestureDetector(
                       onTap: () {
                         widget.galleryController
@@ -215,8 +215,8 @@ class _GalleryState extends State<Gallery> {
                       child: (widget.galleryController
                               .checkImageChoice(imageModel.assetEntity!))
                           ? Container(
-                              height: 25,
-                              width: 25,
+                              height: 30,
+                              width: 30,
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   color: widget.primaryColor),
@@ -230,12 +230,12 @@ class _GalleryState extends State<Gallery> {
                               ),
                             )
                           : Container(
-                              height: 25,
-                              width: 25,
+                              height: 30,
+                              width: 30,
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle,
                                   border:
-                                      Border.all(color: widget.primaryColor, width: 3),
+                                      Border.all(color: widget.primaryColor, width: 3.5),
                                   color: Colors.transparent),
                             ),
                     )))

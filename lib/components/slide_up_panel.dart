@@ -178,7 +178,7 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
               child: SizedBox(
                 height: MediaQuery.of(context).size.height,
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 5.0),
+                  // margin: EdgeInsets.symmetric(horizontal: 5.0),
                   decoration: ShapeDecoration(
                     color: Colors.white,
                     shadows: [
