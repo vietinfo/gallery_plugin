@@ -245,8 +245,6 @@ class _GalleryState extends State<Gallery> {
 
   void listenScrollGirdView() {
     if (!widget.galleryController.isLoadMore) return;
-    print(_scrollController.position.extentBefore);
-    print(_scrollController.position.maxScrollExtent);
     if (_scrollController.offset >=
             _scrollController.position.maxScrollExtent &&
         !_scrollController.position.outOfRange)
