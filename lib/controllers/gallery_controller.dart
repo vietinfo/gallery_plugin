@@ -8,7 +8,7 @@ class GalleryController extends GetxController {
   RxList<AssetEntity> mediaList = <AssetEntity>[].obs;
 
   int quality = 30;
-  int currentIndex = 0;
+  RxInt currentIndex = 0.obs;
 
   RxBool isRoll = false.obs;
   RxBool isLoading = true.obs;

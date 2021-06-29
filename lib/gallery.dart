@@ -185,7 +185,7 @@ class _GalleryState extends State<Gallery> {
       children: [
         GestureDetector(
           onTap: () async {
-            widget.galleryController.currentIndex = index;
+            widget.galleryController.currentIndex.value = index;
             var result = await Get.to(() => ImageDetail(
                   galleryController: widget.galleryController,
                   isSelectMulti: widget.isSelectMulti,

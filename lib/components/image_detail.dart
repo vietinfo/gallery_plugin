@@ -50,11 +50,11 @@ class ImageDetail extends StatelessWidget {
               ? Obx(() {
                   return GestureDetector(
                     onTap: () => galleryController.actionImageChoiceList(
-                        mediaList[galleryController.currentIndex]),
+                        mediaList[galleryController.currentIndex.value]),
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8, left: 8),
                       child: (galleryController.checkImageChoice(
-                              mediaList[galleryController.currentIndex]))
+                              mediaList[galleryController.currentIndex.value]))
                           ? Container(
                               height: 25,
                               width: 25,
@@ -119,7 +119,7 @@ class ImageDetail extends StatelessWidget {
                 : GestureDetector(
                     onTap: () {
                       AssetEntity imageSelect = galleryController
-                          .mediaList[galleryController.currentIndex];
+                          .mediaList[galleryController.currentIndex.value];
                       imagesChoice([imageSelect]);
                       Get.back(result: true);
                     },
@@ -175,7 +175,7 @@ class ImageDetail extends StatelessWidget {
       },
       itemCount: mediaList.length,
       onPageChanged: (int index) {
-        _galleryController.currentIndex = index;
+        _galleryController.currentIndex.value = index;
       },
       controller: PageController(
         initialPage: initIndex,
