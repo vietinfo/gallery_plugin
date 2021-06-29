@@ -12,5 +12,5 @@ Widget loadWidget(double size){
 }
 
 Widget noImage(){
-  return Image.asset('assets/noimg.png', fit: BoxFit.cover,);
+  return Image.asset('assets/noimg.png', fit: BoxFit.cover, package: 'flutter_plugin_gallery',);
 }

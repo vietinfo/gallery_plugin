@@ -8,11 +8,11 @@ class Gallery extends StatefulWidget {
   final Color headerColor;
   final Color primaryColor;
   final bool isSelectMulti;
+  final int itemInOnePage;
   final ValueChanged<List<AssetEntity>> imagesChoice;
   final GalleryController galleryController;
   final SlidingUpPanelController panelController;
   final Widget child;
-  final bool isVideo;
   final int qualityImage;
 
   Gallery(
@@ -28,39 +28,40 @@ class Gallery extends StatefulWidget {
       this.isSelectMulti = true,
       required this.imagesChoice,
       required this.panelController,
-      this.isVideo = false});
+      this.itemInOnePage = 21});
 
   @override
   _GalleryState createState() => _GalleryState();
 }
 
 class _GalleryState extends State<Gallery> {
+  ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
-    
-    widget.galleryController.isVideo = widget.isVideo;
     widget.galleryController.quality = widget.qualityImage;
+    widget.galleryController.itemInOnePage = widget.itemInOnePage;
     widget.panelController.addListener(() {
       if (widget.panelController.status == SlidingUpPanelStatus.hidden)
-        widget.galleryController.imageChoiceList.clear();
+        widget.galleryController.mediaChoiceList.clear();
       if (widget.panelController.status == SlidingUpPanelStatus.expanded)
         widget.galleryController.isRoll.value = true;
       else
         widget.galleryController.isRoll.value = false;
     });
+    _scrollController.addListener(listenScrollGirdView);
     super.initState();
   }
 
   @override
   void dispose() {
     widget.panelController.dispose();
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    widget.galleryController.isVideo = widget.isVideo;
     return Stack(
       children: [
         widget.child,
@@ -96,80 +97,80 @@ class _GalleryState extends State<Gallery> {
                 ),
                 Spacer(),
                 (widget.isSelectMulti)
-                    ? Obx(() => (widget.galleryController.imageChoiceList.length > 0)
-                        ? Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Stack(
-                              children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    widget.imagesChoice(
-                                        widget.galleryController.imageChoiceList);
-                                    widget.panelController.hide();
-                                  },
-                                  child: Container(
-                                    height: 45,
-                                    width: 45,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color:
-                                            widget.primaryColor),
-                                    child: Center(
-                                      child: Icon(
-                                        Icons.send_outlined,
-                                        size: 22,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                    bottom: 0,
-                                    right: 0,
-                                    child: Container(
-                                      height: 20,
-                                      width: 20,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: widget.primaryColor,
-                                          border: Border.all(
-                                              color: Colors.white, width: 3)),
-                                      child: Center(
-                                        child: Text(
-                                          '${widget.galleryController.imageChoiceList.length}',
-                                          style: TextStyle(
-                                              fontSize: 9,
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.bold),
+                    ? Obx(() =>
+                        (widget.galleryController.mediaChoiceList.length > 0)
+                            ? Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Stack(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        widget.imagesChoice(widget
+                                            .galleryController.mediaChoiceList);
+                                        widget.panelController.hide();
+                                      },
+                                      child: Container(
+                                        height: 45,
+                                        width: 45,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: widget.primaryColor),
+                                        child: Center(
+                                          child: Icon(
+                                            Icons.send_outlined,
+                                            size: 22,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
-                                    ))
-                              ],
-                            ),
-                          )
-                        : SizedBox.shrink())
+                                    ),
+                                    Positioned(
+                                        bottom: 0,
+                                        right: 0,
+                                        child: Container(
+                                          height: 20,
+                                          width: 20,
+                                          decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: widget.primaryColor,
+                                              border: Border.all(
+                                                  color: Colors.white,
+                                                  width: 3)),
+                                          child: Center(
+                                            child: Text(
+                                              '${widget.galleryController.mediaChoiceList.length}',
+                                              style: TextStyle(
+                                                  fontSize: 9,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold),
+                                            ),
+                                          ),
+                                        ))
+                                  ],
+                                ),
+                              )
+                            : SizedBox.shrink())
                     : SizedBox.shrink()
               ],
             ),
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Obx(() => (widget.galleryController.isLoading.value)
+            child: Obx(() => (!widget.galleryController.isLoading.value)
                 ? GridView.builder(
-                    // controller: scrollController,
+                    controller: _scrollController,
                     physics: (widget.galleryController.isRoll.value)
                         ? null
                         : NeverScrollableScrollPhysics(),
-                    itemCount: widget.galleryController.imageList.length,
+                    itemCount: widget.galleryController.mediaList.length,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3,
                       mainAxisSpacing: 5,
                       crossAxisSpacing: 5,
                     ),
-                    itemBuilder: _buildImage)
+                    itemBuilder: _buildMediaItem)
                 : loadWidget(20)),
           ),
-          anchor: 0.4,
           panelController: widget.panelController,
           enableOnTap: true, //Enable the onTap callback for control bar.
         ),
@@ -177,21 +178,18 @@ class _GalleryState extends State<Gallery> {
     );
   }
 
-  Widget _buildImage(BuildContext context, int index) {
-    if (widget.galleryController.imageList.length - 9 == index)
-      widget.galleryController.loadMoreItem();
-
-    final ImageModel imageModel = widget.galleryController.imageList[index];
+  Widget _buildMediaItem(BuildContext context, int index) {
+    final AssetEntity assetEntity = widget.galleryController.mediaList[index];
 
     return Stack(
       children: [
         GestureDetector(
           onTap: () async {
-            widget.galleryController.currentIndex.value = index;
+            widget.galleryController.currentIndex = index;
             var result = await Get.to(() => ImageDetail(
-              galleryController: widget.galleryController,
+                  galleryController: widget.galleryController,
                   isSelectMulti: widget.isSelectMulti,
-                  imageList: widget.galleryController.imageList,
+                  mediaList: widget.galleryController.mediaList,
                   initIndex: index,
                   primaryColor: widget.primaryColor,
                   groupName: widget.groupName,
@@ -199,8 +197,9 @@ class _GalleryState extends State<Gallery> {
                 ));
             if (result != null) widget.panelController.hide();
           },
-          child: ImageItem(
-            imageModel: imageModel,
+          child: MediaItemGirdView(
+            assetEntity: assetEntity,
+            quality: widget.qualityImage,
           ),
         ),
         (widget.isSelectMulti)
@@ -210,10 +209,10 @@ class _GalleryState extends State<Gallery> {
                 child: Obx(() => GestureDetector(
                       onTap: () {
                         widget.galleryController
-                            .actionImageChoiceList(imageModel.assetEntity!);
+                            .actionImageChoiceList(assetEntity);
                       },
                       child: (widget.galleryController
-                              .checkImageChoice(imageModel.assetEntity!))
+                              .checkImageChoice(assetEntity))
                           ? Container(
                               height: 30,
                               width: 30,
@@ -222,7 +221,7 @@ class _GalleryState extends State<Gallery> {
                                   color: widget.primaryColor),
                               child: Center(
                                 child: Text(
-                                  '${widget.galleryController.getIndexImageChoice(imageModel.assetEntity!)}',
+                                  '${widget.galleryController.getIndexImageChoice(assetEntity)}',
                                   style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.bold),
@@ -234,13 +233,23 @@ class _GalleryState extends State<Gallery> {
                               width: 30,
                               decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  border:
-                                      Border.all(color: widget.primaryColor, width: 3.5),
+                                  border: Border.all(
+                                      color: widget.primaryColor, width: 3.5),
                                   color: Colors.transparent),
                             ),
                     )))
             : SizedBox.shrink()
       ],
     );
+  }
+
+  void listenScrollGirdView() {
+    if (!widget.galleryController.isLoadMore) return;
+    print(_scrollController.position.extentBefore);
+    print(_scrollController.position.maxScrollExtent);
+    if (_scrollController.offset >=
+            _scrollController.position.maxScrollExtent &&
+        !_scrollController.position.outOfRange)
+      widget.galleryController.loadMoreMedia();
   }
 }

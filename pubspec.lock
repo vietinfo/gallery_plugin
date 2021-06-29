@@ -98,7 +98,7 @@ packages:
       name: file
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.1.1"
+    version: "6.1.2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -218,14 +218,14 @@ packages:
       name: pedantic
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.11.0"
+    version: "1.11.1"
   photo_manager:
     dependency: "direct main"
     description:
       name: photo_manager
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.2"
+    version: "1.2.4"
   platform:
     dependency: transitive
     description:
@@ -377,7 +377,7 @@ packages:
       name: win32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.5"
+    version: "2.2.4"
   xdg_directories:
     dependency: transitive
     description:

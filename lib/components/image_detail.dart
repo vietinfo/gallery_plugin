@@ -3,13 +3,13 @@ part of flutter_plugin_gallery;
 class ImageDetail extends StatelessWidget {
   final Color primaryColor;
   final String groupName;
-  final List<ImageModel> imageList;
+  final List<AssetEntity> mediaList;
   final int initIndex;
   final ValueChanged<List<AssetEntity>> imagesChoice;
   late final bool isSelectMulti;
   final GalleryController galleryController;
   ImageDetail(
-      {required this.imageList,
+      {required this.mediaList,
       required this.initIndex,
         required this.galleryController,
         this.primaryColor = Colors.blue,
@@ -26,7 +26,7 @@ class ImageDetail extends StatelessWidget {
         actions: [
           (isSelectMulti)
               ? Obx(() {
-                  if (galleryController.imageChoiceList.length > 0)
+                  if (galleryController.mediaChoiceList.length > 0)
                     return Container(
                       height: 25,
                       width: 25,
@@ -36,7 +36,7 @@ class ImageDetail extends StatelessWidget {
                           color: Colors.transparent),
                       child: Center(
                         child: Text(
-                          '${galleryController.imageChoiceList.length}',
+                          '${galleryController.mediaChoiceList.length}',
                           style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.bold),
                         ),
@@ -50,13 +50,11 @@ class ImageDetail extends StatelessWidget {
               ? Obx(() {
                   return GestureDetector(
                     onTap: () => galleryController.actionImageChoiceList(
-                        imageList[galleryController.currentIndex.value]
-                            .assetEntity!),
+                        mediaList[galleryController.currentIndex]),
                     child: Padding(
                       padding: const EdgeInsets.only(right: 8, left: 8),
                       child: (galleryController.checkImageChoice(
-                              imageList[galleryController.currentIndex.value]
-                                  .assetEntity!))
+                              mediaList[galleryController.currentIndex]))
                           ? Container(
                               height: 25,
                               width: 25,
@@ -95,11 +93,10 @@ class ImageDetail extends StatelessWidget {
             right: 10,
             child: (isSelectMulti)
                 ? Obx(() {
-                    if (galleryController.imageChoiceList.length > 0)
+                    if (galleryController.mediaChoiceList.length > 0)
                       return GestureDetector(
                         onTap: () {
-                          imagesChoice(galleryController.imageChoiceList);
-                          galleryController.imageChoiceList.clear();
+                          imagesChoice(galleryController.mediaChoiceList);
                           Get.back(result: true);
                         },
                         child: Container(
@@ -122,8 +119,7 @@ class ImageDetail extends StatelessWidget {
                 : GestureDetector(
                     onTap: () {
                       AssetEntity imageSelect = galleryController
-                          .imageList[galleryController.currentIndex.value]
-                          .assetEntity!;
+                          .mediaList[galleryController.currentIndex];
                       imagesChoice([imageSelect]);
                       Get.back(result: true);
                     },
@@ -152,13 +148,13 @@ class ImageDetail extends StatelessWidget {
     return ExtendedImageGesturePageView.builder(
       itemBuilder: (BuildContext context, int index) {
         return FutureBuilder(
-          future: imageList[index].assetEntity?.file,
+          future: mediaList[index].file,
           builder: (context, AsyncSnapshot<File?> snapshot) {
             final File? file = snapshot.data;
             if (file == null) {
               return Container(
                   height: Get.height, width: Get.width, child: loadWidget(30));
-            } else if (imageList[index].assetEntity?.type == AssetType.image)
+            } else if (mediaList[index].type == AssetType.image)
               return Container(
                 height: Get.height,
                 width: Get.width,
@@ -177,9 +173,9 @@ class ImageDetail extends StatelessWidget {
           },
         );
       },
-      itemCount: imageList.length,
+      itemCount: mediaList.length,
       onPageChanged: (int index) {
-        _galleryController.currentIndex.value = index;
+        _galleryController.currentIndex = index;
       },
       controller: PageController(
         initialPage: initIndex,
@@ -206,15 +202,15 @@ class ImageDetail extends StatelessWidget {
               mode: ExtendedImageMode.gesture,
               initGestureConfigHandler: (state) {
                 return GestureConfig(
-                  minScale: 0.9,
+                  minScale: 1,
                   animationMinScale: 0.7,
                   maxScale: 3.0,
-                  animationMaxScale: 3.5,
+                  animationMaxScale: 4,
                   speed: 1.0,
                   inertialSpeed: 100.0,
                   initialScale: 1.0,
                   inPageView: true,
-                  cacheGesture: false,
+                  cacheGesture: true,
                   initialAlignment: InitialAlignment.center,
                 );
               },
@@ -222,20 +218,6 @@ class ImageDetail extends StatelessWidget {
           default:
             return loadWidget(30);
         }
-      },
-      initGestureConfigHandler: (state) {
-        return GestureConfig(
-          minScale: 0.9,
-          animationMinScale: 0.7,
-          maxScale: 3.0,
-          animationMaxScale: 3.5,
-          speed: 1.0,
-          inertialSpeed: 100.0,
-          initialScale: 1.0,
-          inPageView: true,
-          cacheGesture: false,
-          initialAlignment: InitialAlignment.center,
-        );
       },
     );
   }

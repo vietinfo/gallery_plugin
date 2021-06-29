@@ -59,9 +59,7 @@ class _VideoDetailState extends State<VideoDetail> {
                   controller: _chewieController,
                 ),
               );
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return loadWidget(20);
           },
         )
     );

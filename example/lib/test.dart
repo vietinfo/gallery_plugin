@@ -23,7 +23,7 @@ class _TestState extends State<Test> {
                 child: MaterialButton(
                   color: Colors.yellow,
                   onPressed: () async {
-                    await galleryController.refreshGalleryList();
+                    await galleryController.getMedia(galleryType: GalleryType.image);
                     panelController.anchor();
                   },
                   child: Text('Show image'),
@@ -34,7 +34,7 @@ class _TestState extends State<Test> {
                 child: MaterialButton(
                   color: Colors.yellow,
                   onPressed: () async {
-                    await galleryController.refreshGalleryList(onlyVideo: true);
+                    await galleryController.getMedia(galleryType: GalleryType.video);
                     panelController.anchor();
                   },
                   child: Text('Show video'),
@@ -43,10 +43,11 @@ class _TestState extends State<Test> {
             ],
           ),
           isSelectMulti: true,
-          isVideo: false,
           qualityImage: 70,
           panelController: panelController,
-          imagesChoice: (images) {},
+          imagesChoice: (images) {
+            print(images.length);
+          },
           galleryController: galleryController,
         ),
       ),

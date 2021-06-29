@@ -1,116 +1,102 @@
 part of flutter_plugin_gallery;
 
+enum GalleryType {image, video, videoAndImage}
+
 class GalleryController extends GetxController {
   List<AssetPathEntity> listFolder = <AssetPathEntity>[];
-  List<AssetPathEntity> listFolderOnlyVideo = <AssetPathEntity>[];
+  RxList<AssetEntity> mediaChoiceList = <AssetEntity>[].obs;
+  RxList<AssetEntity> mediaList = <AssetEntity>[].obs;
 
-  bool isVideo = false;
   int quality = 30;
-  bool isOnlyVideo = false;
-
-  RxList<AssetEntity> imageChoiceList = <AssetEntity>[].obs;
-  RxList<ImageModel> imageList = <ImageModel>[].obs;
-  RxBool isLoading = false.obs;
-  RxBool isShowGallery = true.obs;
-  RxInt currentIndex = 0.obs;
+  int currentIndex = 0;
 
   RxBool isRoll = false.obs;
+  RxBool isLoading = true.obs;
+  bool isLoadMore = true;
 
-  ScrollController scrollController = ScrollController();
   int page = 0;
   int itemInOnePage = 21;
 
-  Future<void> refreshGalleryList({bool onlyVideo = false}) async {
-    isLoading(false);
-    imageList.clear();
-    page = 0;
-    isOnlyVideo = onlyVideo;
+  late GalleryType galleryType;
 
+  Future<void> getMedia({required GalleryType galleryType}) async {
+    this.galleryType = galleryType;
+    page = 0;
+    isLoadMore = true;
+    isLoading(true);
     var result = await PhotoManager.requestPermission();
     if (result) {
-      if (listFolderOnlyVideo.isEmpty)
-        listFolderOnlyVideo = await PhotoManager.getAssetPathList(
-          type: RequestType.video,
-          hasAll: true,
-          onlyAll: true,
-        );
-      if (listFolder.isEmpty)
-        listFolder = await PhotoManager.getAssetPathList(
-          type: isVideo ? RequestType.common : RequestType.image,
-          hasAll: true,
-          onlyAll: true,
-        );
+      switch(galleryType){
+        case GalleryType.image:
+          listFolder = await PhotoManager.getAssetPathList(
+            type: RequestType.image,
+            hasAll: true,
+            onlyAll: true,
+          );
+          break;
+        case GalleryType.video:
+          listFolder = await PhotoManager.getAssetPathList(
+            type: RequestType.video,
+            hasAll: true,
+            onlyAll: true,
+          );
+          break;
+        case GalleryType.videoAndImage:
+          listFolder = await PhotoManager.getAssetPathList(
+            type: RequestType.common,
+            hasAll: true,
+            onlyAll: true,
+          );
+          break;
+        default:
+          isLoadMore = false;
+          isLoading(false);
+          return;
+      }
     }
     else {
+      isLoadMore = false;
+      isLoading(false);
       return;
     }
 
-    late List<AssetEntity> images;
-    if (!isOnlyVideo)
-      images = await listFolder[0].getAssetListPaged(0, itemInOnePage);
-    else images = await listFolderOnlyVideo[0].getAssetListPaged(0, itemInOnePage);
-    for (final element in images) {
-      imageList.add(ImageModel(
-          assetEntity: element,
-          uint8list: await element.thumbDataWithOption(ThumbOption(
-              width: 200,
-              height: 200,
-              format: ThumbFormat.jpeg,
-              quality: quality))));
-      if (images.length == imageList.length) {
-        imageList.sort((s1, s2) => s2.assetEntity!.createDtSecond!
-            .compareTo(s1.assetEntity!.createDtSecond!));
-        isLoading(true);
-      }
-    }
+    mediaList.value = await listFolder[0].getAssetListPaged(0, itemInOnePage);
+
+    isLoading(false);
   }
 
-  bool checkImageChoice(AssetEntity image) {
-    return imageChoiceList.contains(image);
+  bool checkImageChoice(AssetEntity media) {
+    return mediaChoiceList.contains(media);
   }
 
-  void actionImageChoiceList(AssetEntity image) {
-    if (imageChoiceList.contains(image))
-      imageChoiceList.remove(image);
+  void actionImageChoiceList(AssetEntity media) {
+    if (mediaChoiceList.contains(media))
+      mediaChoiceList.remove(media);
     else
-      imageChoiceList.add(image);
+      mediaChoiceList.add(media);
   }
 
   int getIndexImageChoice(AssetEntity image) {
-    return imageChoiceList.indexOf(image) + 1;
+    return mediaChoiceList.indexOf(image) + 1;
   }
 
-  Future<void> loadMoreItem({int? sizeImage, int? qualityImage}) async {
-    if (imageList.length == listFolder[0].assetCount) return;
+  Future<void> loadMoreMedia() async {
     page++;
     late List<AssetEntity> images;
-    if (!isOnlyVideo)
       images = await listFolder[0].getAssetListPaged(page, itemInOnePage);
-    else
-      images =
-          await listFolderOnlyVideo[0].getAssetListPaged(page, itemInOnePage);
-    for (final element in images) {
-      imageList.add(ImageModel(
-          assetEntity: element,
-          uint8list: await element.thumbDataWithOption(ThumbOption(
-              width: 200,
-              height: 200,
-              format: ThumbFormat.jpeg,
-              quality: quality))));
-    }
-    imageList.sort((s1, s2) => s2.assetEntity!.createDtSecond!
-        .compareTo(s1.assetEntity!.createDtSecond!));
+    if(images.isNotEmpty)
+      mediaList.addAll(images);
+    else isLoadMore = false;
   }
+
 
   @override
   void onInit() async {
     super.onInit();
-    refreshGalleryList();
   }
 
   @override
   void onClose() {
-    scrollController.dispose();
     super.onClose();
   }
 }
