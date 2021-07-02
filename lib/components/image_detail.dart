@@ -98,6 +98,7 @@ class ImageDetail extends StatelessWidget {
                       return GestureDetector(
                         onTap: () {
                           imagesChoice(galleryController.mediaChoiceList);
+                          galleryController.mediaChoiceList.clear();
                           Get.back(result: true);
                         },
                         child: Container(
