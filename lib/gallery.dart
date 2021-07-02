@@ -157,18 +157,25 @@ class _GalleryState extends State<Gallery> {
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 4.0),
             child: Obx(() => (!widget.galleryController.isLoading.value)
-                ? GridView.builder(
-                    controller: _scrollController,
-                    physics: (widget.galleryController.isRoll.value)
-                        ? null
-                        : NeverScrollableScrollPhysics(),
-                    itemCount: widget.galleryController.mediaList.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 5,
-                      crossAxisSpacing: 5,
-                    ),
-                    itemBuilder: _buildMediaItem)
+                ? (widget.galleryController.mediaList.isNotEmpty)
+                    ? GridView.builder(
+                        controller: _scrollController,
+                        physics: (widget.galleryController.isRoll.value)
+                            ? null
+                            : NeverScrollableScrollPhysics(),
+                        itemCount: widget.galleryController.mediaList.length,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 5,
+                          crossAxisSpacing: 5,
+                        ),
+                        itemBuilder: _buildMediaItem)
+                    : Center(
+                        child: Text(
+                          'Không có dữ liệu',
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      )
                 : loadWidget(20)),
           ),
           panelController: widget.panelController,
