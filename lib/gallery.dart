@@ -202,7 +202,7 @@ class _GalleryState extends State<Gallery> {
                   groupName: widget.groupName,
                   imagesChoice: widget.imagesChoice,
                 ));
-            if (result ?? false) Get.back();
+            if (result ?? false) widget.panelController.hide();
           },
           child: MediaItemGirdView(
             assetEntity: assetEntity,
