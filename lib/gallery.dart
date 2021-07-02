@@ -105,9 +105,8 @@ class _GalleryState extends State<Gallery> {
                                   children: [
                                     GestureDetector(
                                       onTap: () {
+                                        widget.imagesChoice(widget.galleryController.mediaChoiceList);
                                         widget.panelController.hide();
-                                        widget.imagesChoice(widget
-                                            .galleryController.mediaChoiceList);
                                       },
                                       child: Container(
                                         height: 45,
@@ -202,7 +201,10 @@ class _GalleryState extends State<Gallery> {
                   groupName: widget.groupName,
                   imagesChoice: widget.imagesChoice,
                 ));
-            if (result != null) widget.panelController.hide();
+            if (result != null) {
+              widget.imagesChoice(result);
+              widget.panelController.hide();
+            }
           },
           child: MediaItemGirdView(
             assetEntity: assetEntity,

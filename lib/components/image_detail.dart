@@ -97,9 +97,9 @@ class ImageDetail extends StatelessWidget {
                     if (galleryController.mediaChoiceList.length > 0)
                       return GestureDetector(
                         onTap: () {
-                          imagesChoice(galleryController.mediaChoiceList);
-                          galleryController.mediaChoiceList.clear();
-                          Get.back(result: true);
+                          // imagesChoice(galleryController.mediaChoiceList);
+                          // galleryController.mediaChoiceList.clear();
+                          Get.back(result: galleryController.mediaChoiceList);
                         },
                         child: Container(
                           height: 50,
@@ -122,8 +122,8 @@ class ImageDetail extends StatelessWidget {
                     onTap: () {
                       AssetEntity imageSelect = galleryController
                           .mediaList[galleryController.currentIndex.value];
-                      imagesChoice([imageSelect]);
-                      Get.back(result: true);
+                      // imagesChoice([imageSelect]);
+                      Get.back(result: [imageSelect]);
                     },
                     child: Container(
                       height: 50,

@@ -116,8 +116,7 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
   void initState() {
     upperBound = 1.0;
     widget.panelController.addListener(handlePanelStatusChanged);
-      _animationController =
-          SlideUpPanelWidget.createAnimationController(this);
+      _animationController = SlideUpPanelWidget.createAnimationController(this);
     animation = _animationController.drive(
       Tween(begin: Offset(0.0, upperBound), end: Offset.zero).chain(
         CurveTween(
@@ -130,21 +129,22 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
   }
 
   void _initData(BuildContext context) {
-    widget.panelController.value = widget.panelStatus;
-    switch (widget.panelController.status) {
-      case SlidingUpPanelStatus.anchored:
-        _animationController.value = anchorFraction;
-        break;
-      case SlidingUpPanelStatus.expanded:
-        _animationController.value = 1.0;
-        break;
-      case SlidingUpPanelStatus.hidden:
-        _animationController.value = 0.0;
-        break;
-      default:
-        _animationController.value = collapseFraction;
-        break;
-    }
+    _animationController.value = 0.0;
+    // widget.panelController.value = widget.panelStatus;
+    // switch (widget.panelController.status) {
+    //   case SlidingUpPanelStatus.anchored:
+    //     _animationController.value = anchorFraction;
+    //     break;
+    //   case SlidingUpPanelStatus.expanded:
+    //     _animationController.value = 1.0;
+    //     break;
+    //   case SlidingUpPanelStatus.hidden:
+    //     _animationController.value = 0.0;
+    //     break;
+    //   default:
+    //     _animationController.value = collapseFraction;
+    //     break;
+    // }
   }
 
   @override
@@ -178,7 +178,6 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
               child: SizedBox(
                 height: MediaQuery.of(context).size.height,
                 child: Container(
-                  // margin: EdgeInsets.symmetric(horizontal: 5.0),
                   decoration: ShapeDecoration(
                     color: Colors.white,
                     shadows: [

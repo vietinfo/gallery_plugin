@@ -11,7 +11,7 @@ class GalleryController extends GetxController {
   RxInt currentIndex = 0.obs;
 
   RxBool isRoll = false.obs;
-  RxBool isLoading = true.obs;
+  RxBool isLoading = false.obs;
   bool isLoadMore = true;
 
   int page = 0;
