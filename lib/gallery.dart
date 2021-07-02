@@ -184,10 +184,9 @@ class _GalleryState extends State<Gallery> {
     return Stack(
       children: [
         GestureDetector(
-          onTap: () {
+          onTap: () async {
             widget.galleryController.currentIndex.value = index;
-            Get.to(() => ImageDetail(
-                  panelController: widget.panelController,
+            final result = await Get.to(() => ImageDetail(
                   galleryController: widget.galleryController,
                   isSelectMulti: widget.isSelectMulti,
                   mediaList: widget.galleryController.mediaList,
@@ -196,6 +195,7 @@ class _GalleryState extends State<Gallery> {
                   groupName: widget.groupName,
                   imagesChoice: widget.imagesChoice,
                 ));
+            if (result ?? false) Get.back();
           },
           child: MediaItemGirdView(
             assetEntity: assetEntity,
