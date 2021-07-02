@@ -5,15 +5,18 @@ class ImageDetail extends StatelessWidget {
   final String groupName;
   final List<AssetEntity> mediaList;
   final int initIndex;
+  final SlidingUpPanelController panelController;
   final ValueChanged<List<AssetEntity>> imagesChoice;
   late final bool isSelectMulti;
   final GalleryController galleryController;
   ImageDetail(
       {required this.mediaList,
       required this.initIndex,
-        required this.galleryController,
-        this.primaryColor = Colors.blue,
-      this.groupName = '', required this.imagesChoice,
+      required this.galleryController,
+      required this.panelController,
+      this.primaryColor = Colors.blue,
+      this.groupName = '',
+      required this.imagesChoice,
       this.isSelectMulti = true});
 
   @override
@@ -96,8 +99,9 @@ class ImageDetail extends StatelessWidget {
                     if (galleryController.mediaChoiceList.length > 0)
                       return GestureDetector(
                         onTap: () {
+                          panelController.hide();
                           imagesChoice(galleryController.mediaChoiceList);
-                          Get.back(result: true);
+                          Get.back();
                         },
                         child: Container(
                           height: 50,
@@ -118,10 +122,11 @@ class ImageDetail extends StatelessWidget {
                   })
                 : GestureDetector(
                     onTap: () {
+                      panelController.hide();
                       AssetEntity imageSelect = galleryController
                           .mediaList[galleryController.currentIndex.value];
                       imagesChoice([imageSelect]);
-                      Get.back(result: true);
+                      Get.back();
                     },
                     child: Container(
                       height: 50,
@@ -184,7 +189,7 @@ class ImageDetail extends StatelessWidget {
     );
   }
 
-  Widget _image(File file){
+  Widget _image(File file) {
     return ExtendedImage.file(
       file,
       fit: BoxFit.contain,
