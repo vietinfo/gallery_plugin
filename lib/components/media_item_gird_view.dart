@@ -10,10 +10,14 @@ class MediaItemGirdView extends StatefulWidget {
 
 class _MediaItemGirdViewState extends State<MediaItemGirdView> {
   Rx<Uint8List> uint8List = Uint8List(0).obs;
+  RxInt fileSize = 0.obs;
+  int durationVideoSecond = 0;
 
   @override
   void initState() {
     getUint8List();
+    getFileSize();
+    getDurationVideo();
     super.initState();
   }
 
@@ -24,6 +28,16 @@ class _MediaItemGirdViewState extends State<MediaItemGirdView> {
         .then((value) {
       if (value != null) uint8List.value = value;
     });
+  }
+
+  Future<void> getFileSize() async {
+    widget.assetEntity.file.then((value) {
+      if (value != null) fileSize.value = value.lengthSync();
+    });
+  }
+
+  void getDurationVideo() {
+    durationVideoSecond = widget.assetEntity.duration;
   }
 
   @override
@@ -42,7 +56,7 @@ class _MediaItemGirdViewState extends State<MediaItemGirdView> {
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) => noImage(),
           );
-        else
+        else {
           return Stack(
             children: [
               Image.memory(
@@ -60,9 +74,24 @@ class _MediaItemGirdViewState extends State<MediaItemGirdView> {
                   child: Icon(
                     Icons.play_arrow,
                     color: Colors.white,
-                  ))
+                    size: 32,
+                  )),
+              Positioned(
+                  top: 2,
+                  left: 2,
+                  child: Text(
+                      (fileSize.value / (1000000)).toStringAsFixed(2) +
+                          ' MB', style: TextStyle(color: Colors.white))),
+              Positioned(
+                  bottom: 2,
+                  right: 2,
+                  child: Text(Duration(seconds: durationVideoSecond)
+                      .toString()
+                      .split('.')
+                      .first, style: TextStyle(color: Colors.white),))
             ],
           );
+        }
       } else
         return noImage();
     });
