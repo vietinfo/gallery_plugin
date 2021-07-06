@@ -1,11 +1,16 @@
 part of flutter_plugin_gallery;
 
-enum GalleryType {image, video, videoAndImage}
+enum GalleryType { image, video, videoAndImage }
 
 class GalleryController extends GetxController {
   List<AssetPathEntity> listFolder = <AssetPathEntity>[];
   RxList<AssetEntity> mediaChoiceList = <AssetEntity>[].obs;
   RxList<AssetEntity> mediaList = <AssetEntity>[].obs;
+
+  int totalImageSelect = 20;
+  int totalVideoSelect = 5;
+  int totalTemp = 10;
+  int maxFileSize = 200;
 
   int quality = 30;
   RxInt currentIndex = 0.obs;
@@ -22,12 +27,14 @@ class GalleryController extends GetxController {
   Future<void> getMedia({required GalleryType galleryType}) async {
     this.galleryType = galleryType;
     page = 0;
+    mediaChoiceList.clear();
     isLoadMore = true;
     isLoading(true);
     var result = await PhotoManager.requestPermission();
     if (result) {
-      switch(galleryType){
+      switch (galleryType) {
         case GalleryType.image:
+          totalTemp = totalImageSelect;
           listFolder = await PhotoManager.getAssetPathList(
             type: RequestType.image,
             hasAll: true,
@@ -35,6 +42,7 @@ class GalleryController extends GetxController {
           );
           break;
         case GalleryType.video:
+          totalTemp = totalVideoSelect;
           listFolder = await PhotoManager.getAssetPathList(
             type: RequestType.video,
             hasAll: true,
@@ -53,8 +61,7 @@ class GalleryController extends GetxController {
           isLoading(false);
           return;
       }
-    }
-    else {
+    } else {
       isLoadMore = false;
       isLoading(false);
       return;
@@ -69,11 +76,23 @@ class GalleryController extends GetxController {
     return mediaChoiceList.contains(media);
   }
 
-  void actionImageChoiceList(AssetEntity media) {
+  Future<void> actionImageChoiceList(AssetEntity media) async {
     if (mediaChoiceList.contains(media))
       mediaChoiceList.remove(media);
-    else
-      mediaChoiceList.add(media);
+    else {
+      if (mediaChoiceList.length < totalTemp) {
+        final File? fileTemp = await media.file;
+        if (fileTemp != null) {
+          final int fileSize = await fileTemp.length();
+          if ((fileSize / 1000000) > maxFileSize)
+            Get.snackbar('Thông báo', 'Dung lượng File quá lớn!');
+          else
+            mediaChoiceList.add(media);
+        } else
+          Get.snackbar('Thông báo', 'File lỗi!');
+      } else
+        Get.snackbar('Thông báo', 'Chỉ được gửi tối đa $totalTemp File');
+    }
   }
 
   int getIndexImageChoice(AssetEntity image) {
@@ -83,12 +102,12 @@ class GalleryController extends GetxController {
   Future<void> loadMoreMedia() async {
     page++;
     late List<AssetEntity> images;
-      images = await listFolder[0].getAssetListPaged(page, itemInOnePage);
-    if(images.isNotEmpty)
+    images = await listFolder[0].getAssetListPaged(page, itemInOnePage);
+    if (images.isNotEmpty)
       mediaList.addAll(images);
-    else isLoadMore = false;
+    else
+      isLoadMore = false;
   }
-
 
   @override
   void onInit() async {

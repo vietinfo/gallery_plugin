@@ -9,6 +9,9 @@ class Gallery extends StatefulWidget {
   final Color primaryColor;
   final bool isSelectMulti;
   final int itemInOnePage;
+  final int totalImageSeclect;
+  final int totalVideoSeclect;
+  final int maxSizeFileMB;
   final ValueChanged<List<AssetEntity>> imagesChoice;
   final GalleryController galleryController;
   final SlidingUpPanelController panelController;
@@ -21,6 +24,9 @@ class Gallery extends StatefulWidget {
       this.qualityImage = 30,
       this.groupName = '',
       this.title = 'Thư viện',
+      this.totalImageSeclect = 5,
+      this.totalVideoSeclect = 3,
+      this.maxSizeFileMB = 10,
       this.iconColor = Colors.blue,
       this.titleColor = Colors.black,
       this.headerColor = Colors.white,
@@ -41,6 +47,11 @@ class _GalleryState extends State<Gallery> {
   void initState() {
     widget.galleryController.quality = widget.qualityImage;
     widget.galleryController.itemInOnePage = widget.itemInOnePage;
+
+    widget.galleryController.totalImageSelect = widget.totalImageSeclect;
+    widget.galleryController.totalVideoSelect = widget.totalVideoSeclect;
+    widget.galleryController.maxFileSize = widget.maxSizeFileMB;
+
     widget.panelController.addListener(() {
       if (widget.panelController.status == SlidingUpPanelStatus.hidden)
         widget.galleryController.mediaChoiceList.clear();
@@ -99,54 +110,68 @@ class _GalleryState extends State<Gallery> {
                 (widget.isSelectMulti)
                     ? Obx(() =>
                         (widget.galleryController.mediaChoiceList.length > 0)
-                            ? Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: Stack(
-                                  children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        widget.imagesChoice(widget.galleryController.mediaChoiceList);
-                                        widget.panelController.hide();
-                                      },
-                                      child: Container(
-                                        height: 45,
-                                        width: 45,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: widget.primaryColor),
-                                        child: Center(
-                                          child: Icon(
-                                            Icons.send_outlined,
-                                            size: 22,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                        bottom: 0,
-                                        right: 0,
-                                        child: Container(
-                                          height: 20,
-                                          width: 20,
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: widget.primaryColor,
-                                              border: Border.all(
-                                                  color: Colors.white,
-                                                  width: 3)),
-                                          child: Center(
-                                            child: Text(
-                                              '${widget.galleryController.mediaChoiceList.length}',
-                                              style: TextStyle(
-                                                  fontSize: 9,
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold),
+                            ? Row(
+                                children: [
+                                  Text(
+                                      '${widget.galleryController.mediaChoiceList.length}/${widget.galleryController.totalTemp}',
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.black)),
+                                  const SizedBox(
+                                    width: 10,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 8.0),
+                                    child: Stack(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () {
+                                            widget.imagesChoice(widget
+                                                .galleryController
+                                                .mediaChoiceList);
+                                            widget.panelController.hide();
+                                          },
+                                          child: Container(
+                                            height: 45,
+                                            width: 45,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                color: widget.primaryColor),
+                                            child: Center(
+                                              child: Icon(
+                                                Icons.send_outlined,
+                                                size: 22,
+                                                color: Colors.white,
+                                              ),
                                             ),
                                           ),
-                                        ))
-                                  ],
-                                ),
+                                        ),
+                                        // Positioned(
+                                        //     bottom: 0,
+                                        //     right: 0,
+                                        //     child: Container(
+                                        //       height: 20,
+                                        //       width: 20,
+                                        //       decoration: BoxDecoration(
+                                        //           shape: BoxShape.circle,
+                                        //           color: widget.primaryColor,
+                                        //           border: Border.all(
+                                        //               color: Colors.white,
+                                        //               width: 3)),
+                                        //       child: Center(
+                                        //         child: Text(
+                                        //           '${widget.galleryController.mediaChoiceList.length}',
+                                        //           style: TextStyle(
+                                        //               fontSize: 9,
+                                        //               color: Colors.white,
+                                        //               fontWeight:
+                                        //                   FontWeight.bold),
+                                        //         ),
+                                        //       ),
+                                        //     ))
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               )
                             : SizedBox.shrink())
                     : SizedBox.shrink()
