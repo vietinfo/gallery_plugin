@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  get: ^4.1.4
+  get: 4.1.4
 
   flutter_plugin_gallery:
     # When depending on this package from a real application you should use:

@@ -130,21 +130,6 @@ class _SlideUpPanelWidgetState extends State<SlideUpPanelWidget>
 
   void _initData(BuildContext context) {
     _animationController.value = 0.0;
-    // widget.panelController.value = widget.panelStatus;
-    // switch (widget.panelController.status) {
-    //   case SlidingUpPanelStatus.anchored:
-    //     _animationController.value = anchorFraction;
-    //     break;
-    //   case SlidingUpPanelStatus.expanded:
-    //     _animationController.value = 1.0;
-    //     break;
-    //   case SlidingUpPanelStatus.hidden:
-    //     _animationController.value = 0.0;
-    //     break;
-    //   default:
-    //     _animationController.value = collapseFraction;
-    //     break;
-    // }
   }
 
   @override

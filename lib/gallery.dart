@@ -5,14 +5,15 @@ class Gallery extends StatefulWidget {
   final Color iconColor;
   final Color titleColor;
   final String title;
+  final bool hasCaption;
   final Color headerColor;
   final Color primaryColor;
   final bool isSelectMulti;
   final int itemInOnePage;
-  final int totalImageSeclect;
-  final int totalVideoSeclect;
+  final int totalImageSelect;
+  final int totalVideoSelect;
   final int maxSizeFileMB;
-  final ValueChanged<List<AssetEntity>> imagesChoice;
+  final ValueChanged<MediaDataModel> imagesChoice;
   final GalleryController galleryController;
   final SlidingUpPanelController panelController;
   final Widget child;
@@ -24,14 +25,15 @@ class Gallery extends StatefulWidget {
       this.qualityImage = 30,
       this.groupName = '',
       this.title = 'Thư viện',
-      this.totalImageSeclect = 20,
-      this.totalVideoSeclect = 5,
+      this.totalImageSelect = 20,
+      this.totalVideoSelect = 5,
       this.maxSizeFileMB = 100,
       this.iconColor = Colors.blue,
       this.titleColor = Colors.black,
       this.headerColor = Colors.white,
       this.primaryColor = Colors.blue,
       this.isSelectMulti = true,
+      this.hasCaption = false,
       required this.imagesChoice,
       required this.panelController,
       this.itemInOnePage = 21});
@@ -43,13 +45,16 @@ class Gallery extends StatefulWidget {
 class _GalleryState extends State<Gallery> {
   ScrollController _scrollController = ScrollController();
 
+  final TextEditingController _textEditingControllerCaption =
+      TextEditingController();
+
   @override
   void initState() {
     widget.galleryController.quality = widget.qualityImage;
     widget.galleryController.itemInOnePage = widget.itemInOnePage;
 
-    widget.galleryController.totalImageSelect = widget.totalImageSeclect;
-    widget.galleryController.totalVideoSelect = widget.totalVideoSeclect;
+    widget.galleryController.totalImageSelect = widget.totalImageSelect;
+    widget.galleryController.totalVideoSelect = widget.totalVideoSelect;
     widget.galleryController.maxFileSize = widget.maxSizeFileMB;
 
     widget.panelController.addListener(() {
@@ -68,6 +73,7 @@ class _GalleryState extends State<Gallery> {
   void dispose() {
     widget.panelController.dispose();
     _scrollController.dispose();
+    _textEditingControllerCaption.dispose();
     super.dispose();
   }
 
@@ -76,135 +82,152 @@ class _GalleryState extends State<Gallery> {
     return Stack(
       children: [
         widget.child,
-        SlideUpPanelWidget(
-          header: Container(
-            decoration: BoxDecoration(
-              color: widget.headerColor,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(10.0),
-                topRight: Radius.circular(10.0),
-              ),
-            ),
-            height: 50,
-            width: Get.width,
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: () => widget.panelController.hide(),
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 8.0, right: 16),
-                    child: Icon(
-                      Icons.clear,
-                      color: widget.iconColor,
+        Column(
+          children: [
+            Expanded(
+              child: SlideUpPanelWidget(
+                header: Container(
+                  decoration: BoxDecoration(
+                    color: widget.headerColor,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(10.0),
+                      topRight: Radius.circular(10.0),
                     ),
                   ),
-                ),
-                Text(
-                  widget.title,
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: widget.titleColor),
-                ),
-                Spacer(),
-                (widget.isSelectMulti)
-                    ? Obx(() =>
-                        (widget.galleryController.mediaChoiceList.length > 0)
-                            ? Row(
-                                children: [
-                                  Text(
-                                      '${widget.galleryController.mediaChoiceList.length}/${widget.galleryController.totalTemp}',
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.black)),
-                                  const SizedBox(
-                                    width: 10,
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 8.0),
-                                    child: Stack(
+                  height: 50,
+                  width: Get.width,
+                  child: Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => widget.panelController.hide(),
+                        child: Padding(
+                          padding: const EdgeInsets.only(left: 8.0, right: 16),
+                          child: Icon(
+                            Icons.clear,
+                            color: widget.iconColor,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        widget.title,
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                            color: widget.titleColor),
+                      ),
+                      Spacer(),
+                      (widget.isSelectMulti)
+                          ? Obx(() =>
+                              (widget.galleryController.mediaChoiceList.length >
+                                      0)
+                                  ? Row(
                                       children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            widget.imagesChoice(widget
-                                                .galleryController
-                                                .mediaChoiceList);
-                                            widget.panelController.hide();
-                                          },
-                                          child: Container(
-                                            height: 45,
-                                            width: 45,
-                                            decoration: BoxDecoration(
-                                                shape: BoxShape.circle,
-                                                color: widget.primaryColor),
-                                            child: Center(
-                                              child: Icon(
-                                                Icons.send_outlined,
-                                                size: 22,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
+                                        Text(
+                                            '${widget.galleryController.mediaChoiceList.length}/${widget.galleryController.totalTemp}',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black)),
+                                        const SizedBox(
+                                          width: 10,
                                         ),
-                                        // Positioned(
-                                        //     bottom: 0,
-                                        //     right: 0,
-                                        //     child: Container(
-                                        //       height: 20,
-                                        //       width: 20,
-                                        //       decoration: BoxDecoration(
-                                        //           shape: BoxShape.circle,
-                                        //           color: widget.primaryColor,
-                                        //           border: Border.all(
-                                        //               color: Colors.white,
-                                        //               width: 3)),
-                                        //       child: Center(
-                                        //         child: Text(
-                                        //           '${widget.galleryController.mediaChoiceList.length}',
-                                        //           style: TextStyle(
-                                        //               fontSize: 9,
-                                        //               color: Colors.white,
-                                        //               fontWeight:
-                                        //                   FontWeight.bold),
-                                        //         ),
-                                        //       ),
-                                        //     ))
                                       ],
-                                    ),
-                                  ),
-                                ],
-                              )
-                            : SizedBox.shrink())
-                    : SizedBox.shrink()
-              ],
+                                    )
+                                  : SizedBox.shrink())
+                          : SizedBox.shrink()
+                    ],
+                  ),
+                ),
+                body: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Obx(() => (!widget.galleryController.isLoading.value)
+                      ? (widget.galleryController.mediaList.isNotEmpty)
+                          ? Column(
+                              children: [
+                                Expanded(
+                                  child: GridView.builder(
+                                      controller: _scrollController,
+                                      physics: (widget
+                                              .galleryController.isRoll.value)
+                                          ? null
+                                          : NeverScrollableScrollPhysics(),
+                                      itemCount: widget
+                                          .galleryController.mediaList.length,
+                                      gridDelegate:
+                                          SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        mainAxisSpacing: 5,
+                                        crossAxisSpacing: 5,
+                                      ),
+                                      itemBuilder: _buildMediaItem),
+                                ),
+                              ],
+                            )
+                          : Center(
+                              child: Text(
+                                'Không có dữ liệu',
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                            )
+                      : loadWidget(20)),
+                ),
+                panelController: widget.panelController,
+                enableOnTap: true, //Enable the onTap callback for control bar.
+              ),
             ),
-          ),
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: Obx(() => (!widget.galleryController.isLoading.value)
-                ? (widget.galleryController.mediaList.isNotEmpty)
-                    ? GridView.builder(
-                        controller: _scrollController,
-                        physics: (widget.galleryController.isRoll.value)
-                            ? null
-                            : NeverScrollableScrollPhysics(),
-                        itemCount: widget.galleryController.mediaList.length,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          mainAxisSpacing: 5,
-                          crossAxisSpacing: 5,
+            if (widget.hasCaption)
+              Obx(() {
+                if (widget.galleryController.mediaChoiceList.isNotEmpty)
+                  return Container(
+                    decoration: BoxDecoration(color: Colors.white),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            controller: _textEditingControllerCaption,
+                            maxLines: null,
+                            style: TextStyle(fontSize: 18),
+                            textCapitalization: TextCapitalization.sentences,
+                            decoration: InputDecoration(
+                                hintText: 'Nhập ghi chú...',
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(16, 0, 8, 0),
+                                border: InputBorder.none),
+                          ),
                         ),
-                        itemBuilder: _buildMediaItem)
-                    : Center(
-                        child: Text(
-                          'Không có dữ liệu',
-                          style: TextStyle(color: Colors.blue),
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: GestureDetector(
+                            onTap: () {
+                              widget.imagesChoice(MediaDataModel(
+                                  listMedia:
+                                      widget.galleryController.mediaChoiceList,
+                                  caption: _textEditingControllerCaption.text));
+                              _textEditingControllerCaption.clear();
+                              widget.panelController.hide();
+                            },
+                            child: Container(
+                              height: 55,
+                              width: 55,
+                              decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: widget.primaryColor),
+                              child: Center(
+                                child: Icon(
+                                  Icons.send_outlined,
+                                  size: 25,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                      )
-                : loadWidget(20)),
-          ),
-          panelController: widget.panelController,
-          enableOnTap: true, //Enable the onTap callback for control bar.
-        ),
+                      ],
+                    ),
+                  );
+                return const SizedBox.shrink();
+              })
+          ],
+        )
       ],
     );
   }
@@ -224,11 +247,15 @@ class _GalleryState extends State<Gallery> {
                   initIndex: index,
                   primaryColor: widget.primaryColor,
                   groupName: widget.groupName,
-                  imagesChoice: widget.imagesChoice,
+                  hasCaption: widget.hasCaption,
+                  textEditingControllerCaption: _textEditingControllerCaption,
                 ));
             if (result != null) {
-              widget.imagesChoice(result);
+              widget.imagesChoice(MediaDataModel(
+                  listMedia: result,
+                  caption: _textEditingControllerCaption.text));
               widget.panelController.hide();
+              _textEditingControllerCaption.clear();
             }
           },
           child: MediaItemGirdView(

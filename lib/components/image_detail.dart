@@ -5,16 +5,18 @@ class ImageDetail extends StatelessWidget {
   final String groupName;
   final List<AssetEntity> mediaList;
   final int initIndex;
-  final ValueChanged<List<AssetEntity>> imagesChoice;
+  final bool hasCaption;
   late final bool isSelectMulti;
   final GalleryController galleryController;
+  final TextEditingController textEditingControllerCaption;
   ImageDetail(
       {required this.mediaList,
       required this.initIndex,
+      required this.hasCaption,
+        required this.textEditingControllerCaption,
       required this.galleryController,
       this.primaryColor = Colors.blue,
       this.groupName = '',
-      required this.imagesChoice,
       this.isSelectMulti = true});
 
   @override
@@ -86,62 +88,123 @@ class ImageDetail extends StatelessWidget {
               : SizedBox.shrink()
         ],
       ),
-      body: Stack(
-        children: [
-          buildImage(galleryController),
-          Positioned(
-            bottom: 20,
-            right: 10,
-            child: (isSelectMulti)
-                ? Obx(() {
+      body: hasCaption
+          ? Stack(
+              children: [
+               buildImage(galleryController),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Obx(() {
                     if (galleryController.mediaChoiceList.length > 0)
-                      return GestureDetector(
-                        onTap: () {
-                          // imagesChoice(galleryController.mediaChoiceList);
-                          // galleryController.mediaChoiceList.clear();
-                          Get.back(result: galleryController.mediaChoiceList);
-                        },
-                        child: Container(
-                          height: 50,
-                          width: 50,
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: primaryColor),
-                          child: Center(
-                            child: Icon(
-                              Icons.send_outlined,
-                              size: 28,
-                              color: Colors.white,
+                      return DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: Colors.black38,
+                          // borderRadius: const BorderRadius.vertical(top: Radius.circular(24))
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                maxLines: null,
+                                controller: textEditingControllerCaption,
+                                style: TextStyle(fontSize: 18, color: Colors.white),
+                                textCapitalization: TextCapitalization.sentences,
+                                decoration: InputDecoration(
+                                    hintText: 'Nhập ghi chú...',
+                                    hintStyle: TextStyle(fontSize: 18, color: Colors.white),
+                                    contentPadding:
+                                    EdgeInsets.fromLTRB(16, 0, 8, 0),
+                                    border: InputBorder.none),
+                              ),
                             ),
-                          ),
+                            GestureDetector(
+                              onTap: () {
+                                Get.back(result: galleryController.mediaChoiceList);
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Container(
+                                  height: 55,
+                                  width: 55,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle, color: primaryColor),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.send_outlined,
+                                      size: 25,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       );
                     else
                       return SizedBox.shrink();
-                  })
-                : GestureDetector(
-                    onTap: () {
-                      AssetEntity imageSelect = galleryController
-                          .mediaList[galleryController.currentIndex.value];
-                      // imagesChoice([imageSelect]);
-                      Get.back(result: [imageSelect]);
-                    },
-                    child: Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                          shape: BoxShape.circle, color: primaryColor),
-                      child: Center(
-                        child: Icon(
-                          Icons.send_outlined,
-                          size: 28,
-                          color: Colors.white,
+                  }),
+                )
+              ],
+            )
+          : Stack(
+              children: [
+                buildImage(galleryController),
+                Positioned(
+                  bottom: 20,
+                  right: 10,
+                  child: (isSelectMulti)
+                      ? Obx(() {
+                          if (galleryController.mediaChoiceList.length > 0)
+                            return GestureDetector(
+                              onTap: () {
+                                Get.back(
+                                    result: galleryController.mediaChoiceList);
+                              },
+                              child: Container(
+                                height: 50,
+                                width: 50,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: primaryColor),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.send_outlined,
+                                    size: 28,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            );
+                          else
+                            return SizedBox.shrink();
+                        })
+                      : GestureDetector(
+                          onTap: () {
+                            AssetEntity imageSelect =
+                                galleryController.mediaList[
+                                    galleryController.currentIndex.value];
+                            Get.back(result: [imageSelect]);
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle, color: primaryColor),
+                            child: Center(
+                              child: Icon(
+                                Icons.send_outlined,
+                                size: 28,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-          )
-        ],
-      ),
+                )
+              ],
+            ),
     );
   }
   // PhotoViewGallery
