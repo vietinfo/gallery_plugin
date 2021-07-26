@@ -19,3 +19,5 @@ part 'components/media_item_gird_view.dart';
 part 'components/loading_widget.dart';
 part 'components/video_detail.dart';
 part 'controllers/gallery_controller.dart';
+
+part 'model/media_data_model.dart';

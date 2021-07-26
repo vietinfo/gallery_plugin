@@ -44,9 +44,9 @@ class _TestState extends State<Test> {
           ),
           isSelectMulti: true,
           qualityImage: 70,
-          hasCaption: true,
+          hasCaption: false,
           panelController: panelController,
-          imagesChoice: (media) {
+          imagesChoice: (MediaDataModel media) {
             print(media.listMedia.length);
             print(media.caption);
           },
