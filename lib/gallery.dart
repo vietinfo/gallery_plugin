@@ -162,12 +162,10 @@ class _GalleryState extends State<Gallery> {
                                 ),
                               ],
                             )
-                          : Center(
-                              child: Text(
-                                'Không có dữ liệu',
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                            )
+                          : Text(
+                            'Không có dữ liệu',
+                            style: TextStyle(color: Colors.blue),
+                          )
                       : loadWidget(20)),
                 ),
                 panelController: widget.panelController,
