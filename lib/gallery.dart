@@ -94,9 +94,10 @@ class _GalleryState extends State<Gallery> {
                       topRight: Radius.circular(10.0),
                     ),
                   ),
-                  height: 50,
+                  height: 55,
                   width: Get.width,
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       GestureDetector(
                         onTap: () => widget.panelController.hide(),
@@ -133,7 +134,36 @@ class _GalleryState extends State<Gallery> {
                                       ],
                                     )
                                   : SizedBox.shrink())
-                          : SizedBox.shrink()
+                          : SizedBox.shrink(),
+                      Spacer(),
+                      Obx(() =>
+                          (widget.galleryController.mediaChoiceList.length > 0)
+                              ? GestureDetector(
+                                  onTap: () {
+                                    widget.imagesChoice(MediaDataModel(
+                                        listMedia: widget.galleryController
+                                            .mediaChoiceList));
+                                    widget.panelController.hide();
+                                  },
+                                  child: Container(
+                                    height: 40,
+                                    width: 40,
+                                    decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: widget.primaryColor),
+                                    child: Center(
+                                      child: Icon(
+                                        Icons.send_outlined,
+                                        size: 25,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox.shrink()),
+                      const SizedBox(
+                        width: 10,
+                      )
                     ],
                   ),
                 ),
@@ -141,31 +171,24 @@ class _GalleryState extends State<Gallery> {
                   padding: const EdgeInsets.symmetric(horizontal: 4.0),
                   child: Obx(() => (!widget.galleryController.isLoading.value)
                       ? (widget.galleryController.mediaList.isNotEmpty)
-                          ? Column(
-                              children: [
-                                Expanded(
-                                  child: GridView.builder(
-                                      controller: _scrollController,
-                                      physics: (widget
-                                              .galleryController.isRoll.value)
-                                          ? null
-                                          : NeverScrollableScrollPhysics(),
-                                      itemCount: widget
-                                          .galleryController.mediaList.length,
-                                      gridDelegate:
-                                          SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3,
-                                        mainAxisSpacing: 5,
-                                        crossAxisSpacing: 5,
-                                      ),
-                                      itemBuilder: _buildMediaItem),
-                                ),
-                              ],
-                            )
+                          ? GridView.builder(
+                              controller: _scrollController,
+                              physics: (widget.galleryController.isRoll.value)
+                                  ? null
+                                  : NeverScrollableScrollPhysics(),
+                              itemCount:
+                                  widget.galleryController.mediaList.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 5,
+                                crossAxisSpacing: 5,
+                              ),
+                              itemBuilder: _buildMediaItem)
                           : Text(
-                            'Không có dữ liệu',
-                            style: TextStyle(color: Colors.blue),
-                          )
+                              'Không có dữ liệu',
+                              style: TextStyle(color: Colors.blue),
+                            )
                       : loadWidget(20)),
                 ),
                 panelController: widget.panelController,
