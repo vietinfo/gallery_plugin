@@ -187,7 +187,7 @@ class _GalleryState extends State<Gallery> {
                               itemBuilder: _buildMediaItem)
                           : Text(
                               'Không có dữ liệu',
-                              style: TextStyle(color: Colors.blue),
+                              style: TextStyle(color: widget.primaryColor),
                             )
                       : loadWidget(20)),
                 ),

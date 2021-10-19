@@ -65,7 +65,7 @@ class ImageDetail extends StatelessWidget {
                                   shape: BoxShape.circle,
                                   border:
                                       Border.all(color: Colors.white, width: 3),
-                                  color: Colors.blue),
+                                  color: primaryColor),
                               child: Center(
                                 child: Icon(
                                   Icons.check,
