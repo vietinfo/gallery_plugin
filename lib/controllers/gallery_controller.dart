@@ -67,7 +67,8 @@ class GalleryController extends GetxController {
       return;
     }
 
-    mediaList.value = await listFolder[0].getAssetListPaged(0, itemInOnePage);
+    if (listFolder.isNotEmpty)
+      mediaList.value = await listFolder[0].getAssetListPaged(0, itemInOnePage);
 
     isLoading(false);
   }
@@ -102,7 +103,8 @@ class GalleryController extends GetxController {
   Future<void> loadMoreMedia() async {
     page++;
     late List<AssetEntity> images;
-    images = await listFolder[0].getAssetListPaged(page, itemInOnePage);
+    if (listFolder.isNotEmpty)
+      images = await listFolder[0].getAssetListPaged(page, itemInOnePage);
     if (images.isNotEmpty)
       mediaList.addAll(images);
     else

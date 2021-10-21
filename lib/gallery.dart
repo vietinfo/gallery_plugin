@@ -185,10 +185,13 @@ class _GalleryState extends State<Gallery> {
                                 crossAxisSpacing: 5,
                               ),
                               itemBuilder: _buildMediaItem)
-                          : Text(
-                              'Không có dữ liệu',
-                              style: TextStyle(color: widget.primaryColor),
-                            )
+                          : Padding(
+                            padding: const EdgeInsets.only(top: 16.0),
+                            child: Text(
+                                'Không có dữ liệu',
+                                style: TextStyle(color: widget.primaryColor),
+                              ),
+                          )
                       : loadWidget(20)),
                 ),
                 panelController: widget.panelController,
