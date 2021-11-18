@@ -13,7 +13,7 @@ class ImageDetail extends StatelessWidget {
       {required this.mediaList,
       required this.initIndex,
       required this.hasCaption,
-        required this.textEditingControllerCaption,
+      required this.textEditingControllerCaption,
       required this.galleryController,
       this.primaryColor = Colors.blue,
       this.groupName = '',
@@ -91,7 +91,7 @@ class ImageDetail extends StatelessWidget {
       body: hasCaption
           ? Stack(
               children: [
-               buildImage(galleryController),
+                buildImage(galleryController),
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -109,19 +109,23 @@ class ImageDetail extends StatelessWidget {
                               child: TextField(
                                 maxLines: null,
                                 controller: textEditingControllerCaption,
-                                style: TextStyle(fontSize: 18, color: Colors.white),
-                                textCapitalization: TextCapitalization.sentences,
+                                style: TextStyle(
+                                    fontSize: 18, color: Colors.white),
+                                textCapitalization:
+                                    TextCapitalization.sentences,
                                 decoration: InputDecoration(
                                     hintText: 'Nhập ghi chú...',
-                                    hintStyle: TextStyle(fontSize: 18, color: Colors.white),
+                                    hintStyle: TextStyle(
+                                        fontSize: 18, color: Colors.white),
                                     contentPadding:
-                                    EdgeInsets.fromLTRB(16, 0, 8, 0),
+                                        EdgeInsets.fromLTRB(16, 0, 8, 0),
                                     border: InputBorder.none),
                               ),
                             ),
                             GestureDetector(
                               onTap: () {
-                                Get.back(result: galleryController.mediaChoiceList);
+                                Get.back(
+                                    result: galleryController.mediaChoiceList);
                               },
                               child: Padding(
                                 padding: const EdgeInsets.all(4.0),
@@ -129,7 +133,8 @@ class ImageDetail extends StatelessWidget {
                                   height: 55,
                                   width: 55,
                                   decoration: BoxDecoration(
-                                      shape: BoxShape.circle, color: primaryColor),
+                                      shape: BoxShape.circle,
+                                      color: primaryColor),
                                   child: Center(
                                     child: Icon(
                                       Icons.send_outlined,
@@ -242,9 +247,7 @@ class ImageDetail extends StatelessWidget {
       onPageChanged: (int index) {
         _galleryController.currentIndex.value = index;
       },
-      controller: PageController(
-        initialPage: initIndex,
-      ),
+      controller: ExtendedPageController(initialPage: initIndex),
       scrollDirection: Axis.horizontal,
     );
   }
